@@ -52,7 +52,7 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">Sparse VideoGen: <br> Accelerating Video Generation with
+            <h1 class="title is-2 publication-title">Sparse VideoGen: <br> Accelerating Video Generation with
               Spatial-Temporal Sparse Attention by 2x with High Pixel Fidelity
 
             </h1>
@@ -155,7 +155,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
-          <h2 class="title is-3">TL;DR</h2>
+          <h2 class="title is-4">TL;DR</h2>
           <div class="content has-text-justified">
             <p>
               Announcing Sparse VideoGen, a training-free method that accelerates video DiTs by achieving <strong>2×
@@ -185,14 +185,13 @@
     </div>
   </section>
   <!-- End teaser video -->
-
   <!-- Additional video section -->
   <section class="hero teaser">
     <div class="container is-max-desktop">
       <div class="hero-body">
         <video poster="" id="speedup" autoplay controls muted loop height="100%">
           <!-- Your video here -->
-          <source src="assets/video/Speedup.mp4" type="video/mp4">
+          <source src="assets/video/speedup.mp4" type="video/mp4">
         </video>
         <h2 class="subtitle has-text-centered">
           Sparse VideoGen achieves 2× speedup in video generation.
@@ -212,7 +211,7 @@
               <img src="assets/Minimal_dark.png" alt="Figure description">
             </figure>
           </div>
-          <h2 class="title is-3">Overview</h2>
+          <h2 class="title is-4">Overview</h2>
           <div class="content has-text-justified">
             <p>
 
@@ -227,23 +226,20 @@
               framework that leverages inherent <strong>spatial and temporal sparsity</strong> in the 3D Full Attention
               operations. Sparse VideoGen's core contributions include
 
-              <br> &nbsp;&nbsp; - &nbsp;&nbsp; Identifying the <strong>spatial and temporal sparsity patterns</strong>
-              in video diffusion models.
-              <br> &nbsp;&nbsp; - &nbsp;&nbsp; Proposing an <strong>Online Profiling Strategy</strong> to dynamically
-              identify these patterns.
-              <br> &nbsp;&nbsp; - &nbsp;&nbsp; Implementing an <strong>end-to-end generation framework</strong> through
-              efficient algorithm-system
-              <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; co-design, with hardware-efficient layout transformation
-              and customized kernels
+            <ul style="list-style-position: inside;">
+              <li> Identifying the <strong>spatial and temporal sparsity patterns</strong> in video diffusion models.
+              </li>
+              <li> Proposing an <strong>Online Profiling Strategy</strong> to dynamically identify these patterns. </li>
+              <li> Implementing an <strong>end-to-end generation framework</strong> through efficient algorithm-system
+                co-design, with hardware-efficient layout transformation and customized kernels </li>
+            </ul>
 
-              <br><br>
-
-              We evaluate Sparse VideoGen with HunyuanVideo and CogVideoX on an H100 with CUDA 12.8 & torch 2.5.1.
-              Results showcase Sparse VideoGen achieves up to 2x speedup while maintaining high pixel fidelity (up to
-              PSNR=29).
+            We evaluate Sparse VideoGen with HunyuanVideo and CogVideoX on an H100 with CUDA 12.8 & torch 2.5.1.
+            Results showcase Sparse VideoGen achieves up to 2x speedup while maintaining high pixel fidelity (up to
+            PSNR=29).
 
             <div class="container has-text-centered">
-              <figure class="image is-inline-block" style="width: 80%;">
+              <figure class="image is-inline-block" style="width: 100%;">
                 <img src="assets/Speedup_Every_Part.png" alt="Attention Portion Figure">
                 <figcaption style="font-size: 0.8em; color: gray;">
                   Figure: Sparse VideoGen accelerate HunyuanVideo inference through algorithm-system co-design.
@@ -264,7 +260,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
-          <h2 class="title is-3">3D Full Attention is Extremely Slow</h2>
+          <h2 class="title is-4">3D Full Attention is Extremely Slow</h2>
           <div class="content has-text-justified">
             <p>
               State-of-the-art Video DiTs models (such as <a href="https://github.com/Tencent/HunyuanVideo"
@@ -283,7 +279,7 @@
               pixel fidelity.
 
             <div class="container has-text-centered">
-              <figure class="image is-inline-block" style="width: 80%;">
+              <figure class="image is-inline-block" style="width: 100%;">
                 <img src="assets/Attention_Portion.png" alt="Attention Portion Figure">
                 <figcaption style="font-size: 0.8em; color: gray;">
                   Figure: Attention Module in HunyuanVideo (120k context length) and CogVideoX (45k context length)
@@ -302,7 +298,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
-          <h2 class="title is-3">Unveiling Inherent Sparsity in 3D Full Attention</h2>
+          <h2 class="title is-4">Unveiling Inherent Sparsity in 3D Full Attention</h2>
 
           <div class="content has-text-justified">
             <p>
@@ -333,7 +329,7 @@
 
 
           <div class="content has-text-justified">
-            <h3 class="title is-4">Spatial Head focus on spatially-local tokens</h3>
+            <h3 class="title is-5">Spatial Head focus on spatially-local tokens</h3>
             <p>The <strong>Spatial Head</strong> focuses on <strong>spatially local tokens</strong> within the same
               frame and adjacent frames, resulting
               in a block-wise layout of the attention map. Since pixels in a single frame are tokenized into contiguous
@@ -344,7 +340,16 @@
               spatial consistency in generated videos.
             </p>
 
-            <h3 class="title is-4">Temporal Head focus on same token across frames</h3>
+            <div class="container has-text-centered">
+              <figure class="image is-inline-block" style="width: 70%;">
+                <img src="assets/Spatial_Head.png" alt="Attention Portion Figure">
+                <figcaption style="font-size: 0.8em; color: gray;">
+                  Figure: Sparse VideoGen accelerate HunyuanVideo inference through algorithm-system co-design.
+                </figcaption>
+              </figure>
+            </div>
+
+            <h3 class="title is-5">Temporal Head focus on same token across frames</h3>
             <p>The <strong>Temporal Head</strong> is designed to capture relationships between tokens across different
               frames,
               facilitating the modeling of temporal dependencies. It employs a slash-wise layout with a constant stride,
@@ -353,20 +358,22 @@
               sequences.
             </p>
 
-            <h3 class="title is-4">Oracle selection for sparse patterns for each head</h3>
+            <div class="container has-text-centered">
+              <figure class="image is-inline-block" style="width: 70%;">
+                <img src="assets/Temporal_Head.png" alt="Attention Portion Figure">
+                <figcaption style="font-size: 0.8em; color: gray;">
+                  Figure: Sparse VideoGen accelerate HunyuanVideo inference through algorithm-system co-design.
+                </figcaption>
+              </figure>
+            </div>
+
+            <h3 class="title is-5">Oracle selection for sparse patterns for each head</h3>
             <p>While the Spatial and Temporal Heads individually address spatial and temporal consistency, their
               <strong>optimal combination</strong> is essential for achieving lossless performance in video generation.
               By assigning each attention head the attention mask that yields the lower mean squared error (MSE),
               successfully achieves a PSNR > 28 dB, indicating near-lossless performance.
             </p>
-            <div class="container has-text-centered">
-              <figure class="image is-inline-block" style="width: 100%;">
-                <img src="assets/Attention_Pattern.png" alt="Attention Pattern Figure">
-                <figcaption style="font-size: 0.8em; color: gray;">
-                  Figure: Attention patterns in video diffusion models showing spatial and temporal heads.
-                </figcaption>
-              </figure>
-            </div>
+
           </div>
         </div>
       </div>
@@ -378,7 +385,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
-          <h2 class="title is-3">Achieving High-Fidelity Compression with Our Online Profiling Strategy</h2>
+          <h2 class="title is-4">Achieving High-Fidelity Compression with Our Online Profiling Strategy</h2>
           <div class="content has-text-justified">
             <p>
               Our next question is: how to efficiently select the appropriate sparsity pattern for each head? The
@@ -422,7 +429,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
-          <h2 class="title is-3">Hardware-Efficient Layout Transformation Enables Theoretical Speedup</h2>
+          <h2 class="title is-4">Hardware-Efficient Layout Transformation Enables Theoretical Speedup</h2>
           <div class="content has-text-justified">
             <p>
               While exploiting spatial and temporal sparsity improves attention efficiency, a key challenge arises
@@ -434,32 +441,36 @@
 
               However, these tokens are often scattered in memory due to the conventional frame-wise token arrangement.
               Such fragmented memory access leads to suboptimal utilization of GPUs, which are optimized for contiguous
-              memory operations. The actual speedup gain of the sparse attention kernel is <strong>much lower</strong> than its
+              memory operations. The actual speedup gain of the sparse attention kernel is <strong>much lower</strong>
+              than its
               theoretical speedup given
               by its sparsity.
               <br><br>
 
               To address this, the <strong>hardware-efficient layout transformation</strong> is introduced. This
-              technique rearranges the tensor layout into a token-wise order, ensuring that tokens required for temporal attention
-              are stored contiguously in memory. By doing so, the layout transformation speedup the attention kernel by 1.7x
+              technique rearranges the tensor layout into a token-wise order, ensuring that tokens required for temporal
+              attention
+              are stored contiguously in memory. By doing so, the layout transformation speedup the attention kernel by
+              1.7x
               and achieves theoretical speedup ratio.
             </p>
 
             <div class="columns is-centered">
-              <div class="column is-half">
-                <figure class="image">
-                  <img src="assets/Layout_Transformation.png" alt="Image 1">
-                  <figcaption style="font-size: 0.8em; color: gray;">Figure 1: Hardware-Efficient layout transformation.
-                  </figcaption>
-                </figure>
-              </div>
-              <div class="column is-half">
-                <figure class="image">
-                  <img src="assets/Layout_Speedup.png" alt="Image 2">
-                  <figcaption style="font-size: 0.8em; color: gray;">Figure 2: Temporal head achieves theoretical
-                    speedup after transformation.</figcaption>
-                </figure>
-              </div>
+              <figure class="image is-inline-block" style="width: 80%;">
+                <img src="assets/Layout_Transformation.png" alt="Image 1">
+                <figcaption style="font-size: 0.8em; color: gray;">Figure 1: Hardware-Efficient layout transformation.
+                </figcaption>
+              </figure>
+            </div>
+            
+            <br>
+
+            <div class="columns is-centered">
+              <figure class="image is-inline-block" style="width: 80%;">
+                <img src="assets/Layout_Speedup.png" alt="Image 2">
+                <figcaption style="font-size: 0.8em; color: gray;">Figure 2: Temporal head achieves theoretical
+                  speedup after transformation.</figcaption>
+              </figure>
             </div>
           </div>
         </div>
