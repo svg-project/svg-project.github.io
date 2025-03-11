@@ -159,10 +159,8 @@
           <div class="content has-text-justified">
             <p>
               Announcing Sparse VideoGen, a training-free method that accelerates video DiTs by achieving <strong>2×
-                speedup
-                with high pixel fidelity</strong> (PSNR = 29). The secret? Unleashing <strong>spatial and temporal
-                sparsity</strong> in 3D Full
-              Attention. Dive into our paper and code to see the magic.
+                speedup with high fidelity</strong> (PSNR = 29). The secret? Unleashing <strong>spatial and temporal
+                sparsity</strong> in 3D Full Attention. Dive into our paper and code to see the magic.
             </p>
           </div>
         </div>
@@ -215,7 +213,7 @@
           <div class="content has-text-justified">
             <p>
 
-              In the field of video generation, the latest and best-performing Video Diffusion Transformer models all
+              In the field of video generation, the state-of-the-art Video Diffusion Transformer models all
               employ 3D Full Attention. However, their substantial computational demands pose significant challenges for
               real-world applications. For example, HunyuanVideo takes 30 minutes to generate a 5-second video on
               1×H100, which is prohibitively time-consuming due to the O(n^2) computation of 3D Full Attention.
@@ -227,7 +225,8 @@
               operations. Sparse VideoGen's core contributions include
 
             <ul style="list-style-position: inside;">
-              <li> Identifying the <strong>spatial and temporal sparsity patterns</strong> in video diffusion models.
+              <li> Identifying the <strong>spatial and temporal sparsity patterns</strong> in video diffusion
+                transformers.
               </li>
               <li> Proposing an <strong>Online Profiling Strategy</strong> to dynamically identify these patterns. </li>
               <li> Implementing an <strong>end-to-end generation framework</strong> through efficient algorithm-system
@@ -266,9 +265,7 @@
               State-of-the-art Video DiTs models (such as <a href="https://github.com/Tencent/HunyuanVideo"
                 target="_blank">HunyuanVideo</a>,
               <a href="https://github.com/THUDM/CogVideo" target="_blank">CogVideoX</a>) adopt a 3D Full Attention
-              mechanism to capture complex spatial and temporal dependencies in video data. This approach offers better
-              generation quality compared to the 2D + 1D method.
-
+              mechanism to capture complex spatial and temporal dependencies in video data.
               <br><br>
 
               However, since the computational complexity of
@@ -385,7 +382,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
-          <h2 class="title is-4">Achieving High-Fidelity Compression with Our Online Profiling Strategy</h2>
+          <h2 class="title is-4">Achieving High-Fidelity with Our Online Profiling Strategy</h2>
           <div class="content has-text-justified">
             <p>
               Our next question is: how to efficiently select the appropriate sparsity pattern for each head? The
@@ -410,8 +407,8 @@
 
 
             <div class="container has-text-centered">
-              <figure class="image is-inline-block" style="width: 100%;">
-                <img src="assets/Online_Profiling.png" alt="Online Profiling Strategy Figure">
+              <figure class="image is-inline-block" style="width: 80%;">
+                <img src="assets/Online_Profiling_Vertical.png" alt="Online Profiling Strategy Figure">
                 <figcaption style="font-size: 0.8em; color: gray;">
                   Figure: Online Profiling Strategy dynamically identifies and exploits sparse attention patterns.
                 </figcaption>
@@ -449,10 +446,8 @@
 
               To address this, the <strong>hardware-efficient layout transformation</strong> is introduced. This
               technique rearranges the tensor layout into a token-wise order, ensuring that tokens required for temporal
-              attention
-              are stored contiguously in memory. By doing so, the layout transformation speedup the attention kernel by
-              1.7x
-              and achieves theoretical speedup ratio.
+              attention are stored contiguously in memory. With our layout transformation technique, our attention kernel achieves
+              an exceptional 5.59x speed up and achieves theoretical speedup ratio.
             </p>
 
             <div class="columns is-centered">
@@ -462,7 +457,7 @@
                 </figcaption>
               </figure>
             </div>
-            
+
             <br>
 
             <div class="columns is-centered">
@@ -484,11 +479,14 @@
     <div class="container is-max-desktop content">
       <h2 class="title">BibTeX</h2>
       <pre><code id="bibtex-code">
-@article{xi2025sparse,
-  title={Sparse VideoGen: Accelerating Video Diffusion Transformers with Spatial-Temporal Sparsity},
-  author={Xi, Haocheng and Yang, Shuo and Zhao, Yilong and Xu, Chenfeng and Li, Muyang and Li, Xiuyu and Lin, Yujun and Cai, Han and Zhang, Jintao and Li, Dacheng and others},
-  journal={arXiv preprint arXiv:2502.01776},
-  year={2025}
+@misc{xi2025sparsevideogenacceleratingvideo,
+  title={Sparse VideoGen: Accelerating Video Diffusion Transformers with Spatial-Temporal Sparsity}, 
+  author={Haocheng Xi and Shuo Yang and Yilong Zhao and Chenfeng Xu and Muyang Li and Xiuyu Li and Yujun Lin and Han Cai and Jintao Zhang and Dacheng Li and Jianfei Chen and Ion Stoica and Kurt Keutzer and Song Han},
+  year={2025},
+  eprint={2502.01776},
+  archivePrefix={arXiv},
+  primaryClass={cs.CV},
+  url={https://arxiv.org/abs/2502.01776}, 
 }
     </code></pre>
       <button class="button is-dark" onclick="copyBibTex()">Copy BibTeX</button>
