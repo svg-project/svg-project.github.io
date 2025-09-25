@@ -3,537 +3,195 @@
 
 <head>
   <meta charset="utf-8">
-  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
-  <!-- Replace the content tag with appropriate information -->
-  <meta name="description" content="DESCRIPTION META TAG">
-  <meta property="og:title" content="SOCIAL MEDIA TITLE TAG" />
-  <meta property="og:description" content="SOCIAL MEDIA DESCRIPTION TAG TAG" />
-  <meta property="og:url" content="URL OF THE WEBSITE" />
-  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
-  <meta property="og:image" content="static/image/your_banner_image.png" />
+  <meta name="description" content="Sparse VideoGen - Multiple Versions">
+  <meta property="og:title" content="Sparse VideoGen - Version Selection" />
+  <meta property="og:description" content="Choose between different versions of Sparse VideoGen project page" />
+  <meta property="og:url" content="https://svg-project.github.io/" />
+  <meta property="og:image" content="static/images/favicon.ico" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
-
-  <meta name="twitter:title" content="TWITTER BANNER TITLE META TAG">
-  <meta name="twitter:description" content="TWITTER BANNER DESCRIPTION META TAG">
-  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
-  <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <!-- Keywords for your paper to be indexed by-->
-  <meta name="keywords" content="KEYWORDS SHOULD BE PLACED HERE">
+  <meta name="keywords" content="Sparse VideoGen, Video Generation, Diffusion Models, Attention">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
-  <title>Sparse VideoGen</title>
+  <title>Sparse VideoGen - Version Selection</title>
   <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
 
   <link rel="stylesheet" href="static/css/bulma.min.css">
-  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
   <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="static/css/index.css">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
-  <script defer src="static/js/fontawesome.all.min.js"></script>
-  <script src="static/js/bulma-carousel.min.js"></script>
-  <script src="static/js/bulma-slider.min.js"></script>
-  <script src="static/js/index.js"></script>
+  <style>
+    .version-card {
+      margin: 2rem 0;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .version-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .version-card.v1 {
+      background: linear-gradient(135deg, #003262 0%, #1e5a96 100%);
+      color: white;
+    }
+
+    .version-card.v2 {
+      background: linear-gradient(135deg, #FDB515 0%, #e7c478 100%);
+      color: black;
+    }
+
+    .version-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .version-description {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+    }
+
+    .version-button {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: inherit;
+      padding: 0.75rem 2rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .version-card.v1 .version-button {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+
+    .version-card.v1 .version-button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      color: white;
+      text-decoration: none;
+    }
+
+    .version-card.v2 .version-button {
+      background: rgba(0, 50, 98, 0.1);
+      border: 2px solid rgba(0, 50, 98, 0.3);
+      color: black;
+    }
+
+    .version-card.v2 .version-button:hover {
+      background: rgba(0, 50, 98, 0.2);
+      border-color: rgba(0, 50, 98, 0.5);
+      color: black;
+      text-decoration: none;
+    }
+
+    .main-title {
+      background: linear-gradient(135deg, #003262 0%, #FDB515 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .subtitle-text {
+      text-align: center;
+      color: #666;
+      margin-bottom: 3rem;
+      font-size: 1.2rem;
+    }
+  </style>
 </head>
 
 <body>
-
-
-  <section class="hero">
-    <div class="hero-body">
-      <div class="container is-max-desktop">
-        <div class="columns is-centered">
-          <div class="column has-text-centered">
-            <h1 class="title is-2 publication-title">Sparse VideoGen: <br> Accelerating Video Generation with
-              Spatial-Temporal Sparse Attention by 2x with High Fidelity
-
-            </h1>
-            <div class="is-size-5 publication-authors">
-              <!-- Paper authors -->
-              <span class="author-block">
-                <a href="https://haochengxi.github.io/" target="_blank">Haocheng Xi</a><sup>*</sup>,</span>
-              <span class="author-block">
-                <a href="https://andy-yang-1.github.io/" target="_blank">Shuo Yang</a><sup>*</sup>,</span>
-              <span class="author-block">
-                <a href="https://happierpig.github.io/" target="_blank">Yilong Zhao</a>,
-              </span>
-              <span class="author-block">
-                <a href="https://www.chenfengx.com/" target="_blank">Chenfeng Xu</a><sup>†</sup>,
-              </span>
-              <span class="author-block">
-                <a href="https://lmxyy.me/" target="_blank">Muyang Li</a>,
-              </span>
-              <span class="author-block">
-                <a href="https://xiuyuli.com/" target="_blank">Xiuyu Li</a>,
-              </span>
-              <span class="author-block">
-                <a href="https://yujunlin.com/" target="_blank">Yujun Lin</a>,
-              </span>
-              <span class="author-block">
-                <a href="https://han-cai.github.io/" target="_blank">Han Cai</a>,
-              </span>
-              <span class="author-block">
-                <a href="blank" target="_blank">Jintao Zhang</a>,
-              </span>
-              <span class="author-block">
-                <a href="https://dachengli1.github.io/" target="_blank">Dacheng Li</a>,
-              </span>
-              <span class="author-block">
-                <a href="https://ml.cs.tsinghua.edu.cn/~jianfei/" target="_blank">Jianfei Chen</a>,
-              </span>
-              <span class="author-block">
-                <a href="https://people.eecs.berkeley.edu/~istoica/" target="_blank">Ion Stoica</a>,
-              </span>
-              <span class="author-block">
-                <a href="https://people.eecs.berkeley.edu/~keutzer/" target="_blank">Kurt Keutzer</a>,
-              </span>
-              <span class="author-block">
-                <a href="https://hanlab.mit.edu/songhan" target="_blank">Song Han</a>
-              </span>
-            </div>
-
-            <div class="is-size-5 publication-authors">
-              <span class="author-block"><sup>1</sup> University of California, Berkeley</span>
-              <span class="author-block"><sup>2</sup> Massachusetts Institute of Technology</span>
-              <span class="author-block"><sup>3</sup> NVIDIA</span>
-              <span class="author-block"><sup>4</sup> Tsinghua University</span>
-              <br>Arxiv Preprint, 2025
-              <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span>
-            </div>
-
-            <div class="column has-text-centered">
-              <div class="publication-links">
-                <!-- Arxiv PDF link -->
-                <span class="link-block">
-                  <a href="https://arxiv.org/pdf/2502.01776" target="_blank"
-                    class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                      <i class="fas fa-file-pdf"></i>
-                    </span>
-                    <span>Paper</span>
-                  </a>
-                </span>
-
-                <!-- Github link -->
-                <span class="link-block">
-                  <a href="https://github.com/svg-project/Sparse-VideoGen/" target="_blank"
-                    class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                      <i class="fab fa-github"></i>
-                    </span>
-                    <span>Code</span>
-                  </a>
-                </span>
-
-                <!-- ArXiv abstract Link -->
-                <span class="link-block">
-                  <a href="https://arxiv.org/abs/2502.01776" target="_blank"
-                    class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                      <i class="ai ai-arxiv"></i>
-                    </span>
-                    <span>arXiv</span>
-                  </a>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section hero is-light">
+  <section class="section">
     <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-4">TL;DR</h2>
-          <div class="content has-text-justified">
-            <p>
-              Announcing Sparse VideoGen, a training-free method that accelerates video DiTs by achieving <strong>2×
-                speedup with high fidelity</strong> (PSNR = 29). The secret? Unleashing <strong>spatial and temporal
-                sparsity</strong> in 3D Full Attention. Dive into our paper and code to see the magic.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Teaser video-->
-  <section class="hero teaser">
-    <div class="container is-max-desktop">
-      <div class="hero-body">
-        <video poster="" id="tree" autoplay controls muted loop height="100%">
-          <!-- Your video here -->
-          <source src="assets/video/Quality.mp4" type="video/mp4">
-        </video>
-        <h2 class="subtitle has-text-centered">
-          Sparse VideoGen maintains high fidelity.
-        </h2>
-      </div>
-    </div>
-  </section>
-  <!-- End teaser video -->
-  <!-- Additional video section -->
-  <section class="hero teaser">
-    <div class="container is-max-desktop">
-      <div class="hero-body">
-        <video poster="" id="speedup" autoplay controls muted loop height="100%">
-          <!-- Your video here -->
-          <source src="assets/video/Speedup.mp4" type="video/mp4">
-        </video>
-        <h2 class="subtitle has-text-centered">
-          Sparse VideoGen achieves 2× speedup in video generation.
-        </h2>
-      </div>
-    </div>
-  </section>
-
-  <!-- Paper abstract -->
-  <section class="section hero is-light">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <!-- Logo section -->
-          <div class="container has-text-centered">
-            <figure class="image is-inline-block" style="width: 40%;">
-              <img src="assets/Minimal_dark.png" alt="Figure description">
-            </figure>
-          </div>
-          <h2 class="title is-4">Overview</h2>
-          <div class="content has-text-justified">
-            <p>
-
-              In the field of video generation, the state-of-the-art Video Diffusion Transformer models all
-              employ 3D Full Attention. However, their substantial computational demands pose significant challenges for
-              real-world applications. For example, HunyuanVideo takes 30 minutes to generate a 5-second video on
-              1×H100, which is prohibitively time-consuming due to the O(n^2) computation of 3D Full Attention.
-
-              <br><br>
-
-              To speed up their inference, we introduce <strong>Sparse VideoGen</strong> (SVG), a training-free
-              framework that leverages inherent <strong>spatial and temporal sparsity</strong> in the 3D Full Attention
-              operations. Sparse VideoGen's core contributions include
-
-            <ul style="list-style-position: inside;">
-              <li> Identifying the <strong>spatial and temporal sparsity patterns</strong> in video diffusion
-                transformers.
-              </li>
-              <li> Proposing an <strong>Online Profiling Strategy</strong> to dynamically identify these patterns. </li>
-              <li> Implementing an <strong>end-to-end generation framework</strong> through efficient algorithm-system
-                co-design, with hardware-efficient layout transformation and customized kernels </li>
-            </ul>
-
-            We evaluate Sparse VideoGen with HunyuanVideo and CogVideoX on an H100 with CUDA 12.8 & torch 2.5.1.
-            Results showcase Sparse VideoGen achieves up to 2x speedup while maintaining high fidelity (up to
-            PSNR=29).
-
-            <div class="container has-text-centered">
-              <figure class="image is-inline-block" style="width: 100%;">
-                <img src="assets/Speedup_Every_Part.png" alt="Attention Portion Figure">
-                <figcaption style="font-size: 0.8em; color: gray;">
-                  Figure: Sparse VideoGen accelerate HunyuanVideo inference through algorithm-system co-design.
-                </figcaption>
-              </figure>
-            </div>
-
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- End paper abstract -->
-
-  <!-- Challenge of 3D Full Attention in Video Generation -->
-  <section class="section hero">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-4">3D Full Attention is Extremely Slow</h2>
-          <div class="content has-text-justified">
-            <p>
-              State-of-the-art Video DiTs models (such as <a href="https://github.com/Tencent/HunyuanVideo"
-                target="_blank">HunyuanVideo</a>,
-              <a href="https://github.com/THUDM/CogVideo" target="_blank">CogVideoX</a>) adopt a 3D Full Attention
-              mechanism to capture complex spatial and temporal dependencies in video data.
-              <br><br>
-
-              However, since the computational complexity of
-              Attention increases quadratically with the context length, the inference time becomes excessively long.
-              For example, in HunyuanVideo it takes 29 minutes to generate a 5-second, 720p video on a single H100 GPU,
-              with attention operations consuming over 80% of the runtime. This computational bottleneck motivated us to
-              explore efficient attention mechanisms to accelerate DiTs while maintaining high generation quality and
-              fidelity.
-
-            <div class="container has-text-centered">
-              <figure class="image is-inline-block" style="width: 100%;">
-                <img src="assets/Attention_Portion.png" alt="Attention Portion Figure">
-                <figcaption style="font-size: 0.8em; color: gray;">
-                  Figure: Attention Module in HunyuanVideo (120k context length) and CogVideoX (45k context length)
-                  takes >80% of time.</figcaption>
-              </figure>
-            </div>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Unveiling Inherent Sparsity in Attention Mechanisms -->
-  <section class="section hero is-light">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-4">Unveiling Inherent Sparsity in 3D Full Attention</h2>
-
-          <div class="content has-text-justified">
-            <p>
-              We observed two distinct sparsity patterns emerging in video diffusion's attention maps: <strong>spatial
-                sparsity </strong>
-              and <strong>temporal sparsity</strong>. We also found that most attention heads can be distinctly
-              classified into one of
-              these two categories. In HunyuanVideo, 29.2% of attention heads are spatial, 66.7% are temporal, and only
-              4.1% are ambiguous. Check our demo to understand our findings!
-
-          </div>
-
-
-          <!-- Demo video section -->
-          <section class="hero teaser">
-            <div class="container is-max-desktop">
-              <div class="hero-body">
-                <video poster="" id="algorithm-demo" autoplay controls muted loop height="100%">
-                  <!-- Your video here -->
-                  <source src="assets/video/Algorithm.mp4" type="video/mp4">
-                </video>
-                <h2 class="subtitle has-text-centered">
-                  Spatial Head, Temporal Head, and Layout Transformation to speedup attention.
-                </h2>
-              </div>
-            </div>
-          </section>
-
-
-          <div class="content has-text-justified">
-            <h3 class="title is-5">Spatial Head focus on spatially-local tokens</h3>
-            <p>The <strong>Spatial Head</strong> focuses on <strong>spatially local tokens</strong> within the same
-              frame and adjacent frames, resulting
-              in a block-wise layout of the attention map. Since pixels in a single frame are tokenized into contiguous
-              sequences, the Spatial Head attends to tokens corresponding to <strong>neighboring pixels</strong>, making
-              the attention
-              mask concentrate around the <strong>main diagonal</strong>. Spatial Head is essential for maintaining
-              <strong>video quality</strong> and
-              spatial consistency in generated videos.
-            </p>
-
-            <div class="container has-text-centered">
-              <figure class="image is-inline-block" style="width: 70%;">
-                <img src="assets/Spatial_Head.png" alt="Attention Portion Figure">
-                <figcaption style="font-size: 0.8em; color: gray;">
-                  Figure: Sparse VideoGen accelerate HunyuanVideo inference through algorithm-system co-design.
-                </figcaption>
-              </figure>
-            </div>
-
-            <h3 class="title is-5">Temporal Head focus on same token across frames</h3>
-            <p>The <strong>Temporal Head</strong> is designed to capture relationships between tokens across different
-              frames,
-              facilitating the modeling of temporal dependencies. It employs a slash-wise layout with a constant stride,
-              targeting tokens at <strong>consistent spatial locations over time</strong>.
-              This mechanism is crucial for ensuring <strong>temporal consistency</strong> in the generated video
-              sequences.
-            </p>
-
-            <div class="container has-text-centered">
-              <figure class="image is-inline-block" style="width: 70%;">
-                <img src="assets/Temporal_Head.png" alt="Attention Portion Figure">
-                <figcaption style="font-size: 0.8em; color: gray;">
-                  Figure: Sparse VideoGen accelerate HunyuanVideo inference through algorithm-system co-design.
-                </figcaption>
-              </figure>
-            </div>
-
-            <h3 class="title is-5">Oracle selection for sparse patterns for each head</h3>
-            <p>While the Spatial and Temporal Heads individually address spatial and temporal consistency, their
-              <strong>optimal combination</strong> is essential for achieving lossless performance in video generation.
-              By assigning each attention head the attention mask that yields the lower mean squared error (MSE),
-              successfully achieves a PSNR > 28 dB, indicating near-lossless performance.
-            </p>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Introducing Sparse VideoGen (SVG) -->
-  <section class="section hero">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-4">Achieving High-Fidelity with Our Online Profiling Strategy</h2>
-          <div class="content has-text-justified">
-            <p>
-              Our next question is: how to efficiently select the appropriate sparsity pattern for each head? The
-              theoretical lossless performance above does not lead to real speedup since it requires the computation of
-              the full attention mask. The challenge arises since the oracle sparsity pattern is <strong>not
-                static</strong>; it actually <strong>varies across layers and denoising steps</strong>. This dynamic
-              nature necessitates an adaptive
-              and efficient method to determine the sparsity pattern on-the-fly.
-
-              <br><br>
-
-              To address this challenge, Sparse VideoGen proposes an <strong>Online Profiling Strategy</strong> to
-              dynamically identify and exploit these sparse attention patterns with very minimal overhead.
-              This strategy samples a <strong>subset of query tokens</strong>, and determines the most appropriate
-              sparsity pattern for each head based on the MSE on these sampled query tokens.
-              <br><br>
-
-              We find that a very small number of query tokens (64 out of 120k) is sufficient to <strong>accurately
-                predict</strong> the
-              optimal sparsity pattern. Meanwhile, since the sampled query token number is small, the overhead of the
-              Online Profiling Strategy is negligible, making it highly efficient.
-
-
-            <div class="container has-text-centered">
-              <figure class="image is-inline-block" style="width: 80%;">
-                <img src="assets/Online_Profiling_Vertical.png" alt="Online Profiling Strategy Figure">
-                <figcaption style="font-size: 0.8em; color: gray;">
-                  Figure: Online Profiling Strategy dynamically identifies and exploits sparse attention patterns.
-                </figcaption>
-              </figure>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Hardware-Efficient Layout Transformation -->
-  <section class="section hero is-light">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-4">Hardware-Efficient Layout Transformation Enables Theoretical Speedup</h2>
-          <div class="content has-text-justified">
-            <p>
-              While exploiting spatial and temporal sparsity improves attention efficiency, a key challenge arises
-              from the <strong>non-contiguous memory access</strong> patterns inherent in temporal attention. Recall
-              that temporal heads
-              require accessing tokens at the same spatial position across multiple frames, resulting in an attention
-              mask composed of multiple thin, slash-wise patterns.
-              <br><br>
-
-              However, these tokens are often scattered in memory due to the conventional frame-wise token arrangement.
-              Such fragmented memory access leads to suboptimal utilization of GPUs, which are optimized for contiguous
-              memory operations. The actual speedup gain of the sparse attention kernel is <strong>much lower</strong>
-              than its
-              theoretical speedup given
-              by its sparsity.
-              <br><br>
-
-              To address this, the <strong>hardware-efficient layout transformation</strong> is introduced. This
-              technique rearranges the tensor layout into a token-wise order, ensuring that tokens required for temporal
-              attention are stored contiguously in memory. With our layout transformation technique, our attention kernel achieves
-              an exceptional 5.59x speed up and achieves theoretical speedup ratio.
-            </p>
-
-            <div class="columns is-centered">
-              <figure class="image is-inline-block" style="width: 80%;">
-                <img src="assets/Layout_Transformation.png" alt="Image 1">
-                <figcaption style="font-size: 0.8em; color: gray;">Figure 1: Hardware-Efficient layout transformation.
-                </figcaption>
-              </figure>
-            </div>
-
-            <br>
-
-            <div class="columns is-centered">
-              <figure class="image is-inline-block" style="width: 80%;">
-                <img src="assets/Layout_Speedup.png" alt="Image 2">
-                <figcaption style="font-size: 0.8em; color: gray;">Figure 2: Temporal head achieves theoretical
-                  speedup after transformation.</figcaption>
-              </figure>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!--BibTex citation -->
-  <section class="section" id="BibTeX">
-    <div class="container is-max-desktop content">
-      <h2 class="title">BibTeX</h2>
-      <pre><code id="bibtex-code">
-@misc{xi2025sparsevideogenacceleratingvideo,
-  title={Sparse VideoGen: Accelerating Video Diffusion Transformers with Spatial-Temporal Sparsity}, 
-  author={Haocheng Xi and Shuo Yang and Yilong Zhao and Chenfeng Xu and Muyang Li and Xiuyu Li and Yujun Lin and Han Cai and Jintao Zhang and Dacheng Li and Jianfei Chen and Ion Stoica and Kurt Keutzer and Song Han},
-  year={2025},
-  eprint={2502.01776},
-  archivePrefix={arXiv},
-  primaryClass={cs.CV},
-  url={https://arxiv.org/abs/2502.01776}, 
-}
-    </code></pre>
-      <button class="button is-dark" onclick="copyBibTex()">Copy BibTeX</button>
-    </div>
-  </section>
-
-  <script>
-    function copyBibTex() {
-      var copyText = document.getElementById("bibtex-code").innerText;
-      navigator.clipboard.writeText(copyText).then(function () {
-        alert("BibTeX copied to clipboard!");
-      }, function (err) {
-        alert("Failed to copy BibTeX: ", err);
-      });
-    }
-  </script>
-  <!--End BibTex citation -->
-
-
-  <footer class="footer">
-    <div class="container">
       <div class="columns is-centered">
-        <div class="column is-8">
-          <div class="content">
+        <div class="column is-three-quarters">
 
-            <p>
-              This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template"
-                target="_blank">Academic Project Page Template</a> which was adopted from the <a
-                href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
-              You are free to borrow the source code of this website, we just ask that you link back to this page in the
-              footer. <br> This website is licensed under a <a rel="license"
-                href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
-                Commons Attribution-ShareAlike 4.0 International License</a>.
-            </p>
+          <h1 class="title is-1 main-title">
+            Sparse VideoGen
+          </h1>
 
+          <p class="subtitle-text">
+            Towards ultra-efficient video generation
+          </p>
+
+          <!-- Version 1 Card -->
+          <div class="version-card v1">
+            <div class="version-title">
+              Sparse VideoGen 1
+            </div>
+            <div class="version-description">
+              Identity the spatial and temporal sparsity patterns in video diffusion models.
+            </div>
+            <a href="v1/" class="version-button">
+              <i class="fas fa-arrow-right"></i> Access SVG1
+            </a>
           </div>
+
+          <!-- Version 2 Card -->
+          <div class="version-card v2">
+            <div class="version-title">
+              Sparse VideoGen 2
+            </div>
+            <div class="version-description">
+              Densify attention's critical tokens with semantic-aware permutation.
+            </div>
+            <a href="v2/" class="version-button">
+              <i class="fas fa-arrow-right"></i> Access SVG2
+            </a>
+          </div>
+
+          <!-- Quick Links -->
+          <div class="has-text-centered" style="margin-top: 3rem;">
+            <h3 class="title is-4">Quick Links</h3>
+            <div class="buttons is-centered">
+              <!-- SVG1 arxiv -->
+              <a href="https://arxiv.org/abs/2502.01776" target="_blank" class="button"
+                style="background-color: #003262; color: white; border: none;">
+                <span class="icon">
+                  <i class="ai ai-arxiv"></i>
+                </span>
+                <span>SVG1 arxiv</span>
+              </a>
+
+              <!-- SVG2 arxiv -->
+              <a href="https://arxiv.org/abs/2505.18875/" target="_blank" class="button"
+                style="background-color: #FDB515; color: black; border: none;">
+                <span class="icon">
+                  <i class="fab fa-github"></i>
+                </span>
+                <span>SVG2 arxiv</span>
+              </a>
+
+              <!-- Github Link -->
+              <a href="https://github.com/svg-project/Sparse-VideoGen/" target="_blank" class="button"
+                style="background-color: #750014; color: white; border: none;">
+                <span class="icon">
+                  <i class="fab fa-github"></i>
+                </span>
+                <span>Github Repo</span>
+              </a>
+
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
-  </footer>
-
-  <!-- Statcounter tracking code -->
-
-  <!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
-
-  <!-- End of Statcounter Code -->
-
+  </section>
+  <script src="static/js/fontawesome.all.min.js"></script>
 </body>
 
 </html>
