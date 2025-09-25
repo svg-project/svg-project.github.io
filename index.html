@@ -110,14 +110,44 @@
       margin-bottom: 3rem;
       font-size: 1.2rem;
     }
+
+    /* Mobile responsive styles */
+    @media screen and (max-width: 768px) {
+      .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .version-card {
+        margin: 1.5rem 0;
+        padding: 1.5rem;
+      }
+
+      .version-title {
+        font-size: 1.5rem;
+      }
+
+      .version-description {
+        font-size: 1rem;
+      }
+
+      .main-title {
+        font-size: 2rem !important;
+      }
+
+      .subtitle-text {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+      }
+    }
   </style>
 </head>
 
 <body>
   <section class="section">
-    <div class="container is-max-desktop">
+    <div class="container">
       <div class="columns is-centered">
-        <div class="column is-three-quarters">
+        <div class="column is-full-mobile is-three-quarters-tablet">
 
           <h1 class="title is-1 main-title">
             Sparse VideoGen

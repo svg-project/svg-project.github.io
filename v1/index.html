@@ -42,6 +42,50 @@
   <script src="../static/js/bulma-carousel.min.js"></script>
   <script src="../static/js/bulma-slider.min.js"></script>
   <script src="../static/js/index.js"></script>
+
+  <style>
+    /* Mobile responsive styles */
+    @media screen and (max-width: 768px) {
+      .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .hero-body {
+        padding: 2rem 1rem;
+      }
+
+      .title.is-1 {
+        font-size: 2rem !important;
+      }
+
+      .title.is-3 {
+        font-size: 1.5rem !important;
+      }
+
+      .publication-title {
+        font-size: 1.8rem !important;
+        line-height: 1.2;
+      }
+
+      .publication-authors {
+        font-size: 0.9rem;
+      }
+
+      .button {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+      }
+
+      .results-carousel .item {
+        padding: 10px;
+      }
+
+      .publication-video {
+        margin: 1rem 0;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -49,7 +93,7 @@
 
   <section class="hero">
     <div class="hero-body">
-      <div class="container is-max-desktop">
+      <div class="container">
         <div class="columns is-centered">
           <div class="column has-text-centered">
             <h1 class="title is-2 publication-title">Sparse VideoGen: <br> Accelerating Video Generation with
@@ -163,7 +207,7 @@
   </section>
 
   <section class="section hero is-light">
-    <div class="container is-max-desktop">
+    <div class="container">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-4">TL;DR</h2>
@@ -183,7 +227,7 @@
 
   <!-- Teaser video-->
   <section class="hero teaser">
-    <div class="container is-max-desktop">
+    <div class="container">
       <div class="hero-body">
         <video poster="" id="tree" autoplay controls muted loop height="100%">
           <!-- Your video here -->
@@ -198,7 +242,7 @@
   <!-- End teaser video -->
   <!-- Additional video section -->
   <section class="hero teaser">
-    <div class="container is-max-desktop">
+    <div class="container">
       <div class="hero-body">
         <video poster="" id="speedup" autoplay controls muted loop height="100%">
           <!-- Your video here -->
@@ -213,7 +257,7 @@
 
   <!-- Paper abstract -->
   <section class="section hero is-light">
-    <div class="container is-max-desktop">
+    <div class="container">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <!-- Logo section -->
@@ -268,7 +312,7 @@
 
   <!-- Challenge of 3D Full Attention in Video Generation -->
   <section class="section hero">
-    <div class="container is-max-desktop">
+    <div class="container">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-4">3D Full Attention is Extremely Slow</h2>
@@ -306,7 +350,7 @@
 
   <!-- Unveiling Inherent Sparsity in Attention Mechanisms -->
   <section class="section hero is-light">
-    <div class="container is-max-desktop">
+    <div class="container">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-4">Unveiling Inherent Sparsity in 3D Full Attention</h2>
@@ -325,7 +369,7 @@
 
           <!-- Demo video section -->
           <section class="hero teaser">
-            <div class="container is-max-desktop">
+            <div class="container">
               <div class="hero-body">
                 <video poster="" id="algorithm-demo" autoplay controls muted loop height="100%">
                   <!-- Your video here -->
@@ -393,7 +437,7 @@
 
   <!-- Introducing Sparse VideoGen (SVG) -->
   <section class="section hero">
-    <div class="container is-max-desktop">
+    <div class="container">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-4">Achieving High-Fidelity Compression with Our Online Profiling Strategy</h2>
@@ -437,7 +481,7 @@
 
   <!-- Hardware-Efficient Layout Transformation -->
   <section class="section hero is-light">
-    <div class="container is-max-desktop">
+    <div class="container">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-4">Hardware-Efficient Layout Transformation Enables Theoretical Speedup</h2>
@@ -492,7 +536,7 @@
 
   <!--BibTex citation -->
   <section class="section" id="BibTeX">
-    <div class="container is-max-desktop content">
+    <div class="container content">
       <h2 class="title">BibTeX</h2>
       <pre><code id="bibtex-code">
 @article{xi2025sparse,

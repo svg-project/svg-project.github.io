@@ -127,7 +127,7 @@
       max-width: 80%;
     }
 
-    @media (max-width: 2048px) {
+    @media (max-width: 768px) {
       .image-modal-content {
         max-width: 95%;
         max-height: 85%;
@@ -305,7 +305,7 @@
     }
 
     /* Responsive design for gallery */
-    @media (max-width: 2048px) {
+    @media (max-width: 768px) {
       .image-gallery-grid {
         grid-template-columns: repeat(16, 1fr);
         grid-template-rows: repeat(20, 1fr);
@@ -401,6 +401,43 @@
 
       .image-placeholder {
         font-size: 8px;
+      }
+
+      /* Additional mobile responsive styles */
+      .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .hero-body {
+        padding: 2rem 1rem;
+      }
+
+      .title.is-2 {
+        font-size: 1.8rem !important;
+      }
+
+      .publication-title {
+        font-size: 1.6rem !important;
+        line-height: 1.2;
+      }
+
+      .publication-authors {
+        font-size: 0.9rem;
+      }
+
+      .button {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        margin: 0.25rem;
+      }
+
+      .results-carousel .item {
+        padding: 10px;
+      }
+
+      .publication-video {
+        margin: 1rem 0;
       }
     }
   </style>
