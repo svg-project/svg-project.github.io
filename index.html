@@ -95,6 +95,24 @@
       text-decoration: none;
     }
 
+    .version-card.v3 {
+      background: linear-gradient(135deg, #FF6B6B 0%, #ee5a52 100%);
+      color: white;
+    }
+
+    .version-card.v3 .version-button {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+
+    .version-card.v3 .version-button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      color: white;
+      text-decoration: none;
+    }
+
     .main-title {
       background: linear-gradient(135deg, #003262 0%, #FDB515 100%);
       -webkit-background-clip: text;
@@ -183,12 +201,25 @@
             </a>
           </div>
 
+          <!-- Version 3 Card - SVG-EAR -->
+          <div class="version-card v3">
+            <div class="version-title">
+              Sparse VideoGen EAR
+            </div>
+            <div class="version-description">
+              Mitigate sparse attention errors with error-aware routing and linear compensation.
+            </div>
+            <a href="v3/" class="version-button">
+              <i class="fas fa-arrow-right"></i> Access SVG-EAR
+            </a>
+          </div>
+
           <!-- Quick Links -->
           <div class="has-text-centered" style="margin-top: 3rem;">
             <h3 class="title is-4">Quick Links</h3>
             <div class="buttons is-centered">
               <!-- SVG1 arxiv -->
-              <a href="https://arxiv.org/abs/2502.01776" target="_blank" class="button"
+              <a href="https://arxiv.org/abs/2603.08982" target="_blank" class="button"
                 style="background-color: #003262; color: white; border: none;">
                 <span class="icon">
                   <i class="ai ai-arxiv"></i>
@@ -197,16 +228,25 @@
               </a>
 
               <!-- SVG2 arxiv -->
-              <a href="https://arxiv.org/abs/2505.18875/" target="_blank" class="button"
+              <a href="https://arxiv.org/abs/2603.08982" target="_blank" class="button"
                 style="background-color: #FDB515; color: black; border: none;">
                 <span class="icon">
-                  <i class="fab fa-github"></i>
+                  <i class="ai ai-arxiv"></i>
                 </span>
                 <span>SVG2 arxiv</span>
               </a>
 
+              <!-- SVG-EAR arxiv -->
+              <a href="https://arxiv.org/abs/2603.08982" target="_blank" class="button"
+                style="background-color: #FF6B6B; color: white; border: none;">
+                <span class="icon">
+                  <i class="ai ai-arxiv"></i>
+                </span>
+                <span>SVG-EAR arxiv</span>
+              </a>
+
               <!-- Github Link -->
-              <a href="https://github.com/svg-project/Sparse-VideoGen/" target="_blank" class="button"
+              <a href="https://github.com/svg-project/SVG-EAR/" target="_blank" class="button"
                 style="background-color: #750014; color: white; border: none;">
                 <span class="icon">
                   <i class="fab fa-github"></i>
