@@ -3,18 +3,18 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="description" content="Sparse VideoGen - Multiple Versions">
-  <meta property="og:title" content="Sparse VideoGen - Version Selection" />
-  <meta property="og:description" content="Choose between different versions of Sparse VideoGen project page" />
+  <meta name="description" content="Sparse VideoGen & Quant VideoGen">
+  <meta property="og:title" content="Sparse VideoGen & Quant VideoGen" />
+  <meta property="og:description" content="Project pages for Sparse VideoGen and Quant VideoGen" />
   <meta property="og:url" content="https://svg-project.github.io/" />
   <meta property="og:image" content="static/images/favicon.ico" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
-  <meta name="keywords" content="Sparse VideoGen, Video Generation, Diffusion Models, Attention">
+  <meta name="keywords" content="Sparse VideoGen, Quant VideoGen, Video Generation, Diffusion Models, Attention, KV Cache, Quantization">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Sparse VideoGen - Version Selection</title>
+  <title>Sparse VideoGen & Quant VideoGen</title>
   <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
 
@@ -44,6 +44,11 @@
     .version-card.v2 {
       background: linear-gradient(135deg, #FDB515 0%, #e7c478 100%);
       color: black;
+    }
+
+    .version-card.qvg {
+      background: linear-gradient(135deg, #750014 0%, #a8324a 100%);
+      color: white;
     }
 
     .version-title {
@@ -95,8 +100,21 @@
       text-decoration: none;
     }
 
+    .version-card.qvg .version-button {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+
+    .version-card.qvg .version-button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      color: white;
+      text-decoration: none;
+    }
+
     .main-title {
-      background: linear-gradient(135deg, #003262 0%, #FDB515 100%);
+      background: linear-gradient(135deg, #003262 0%, #FDB515 50%, #750014 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -150,7 +168,7 @@
         <div class="column is-full-mobile is-three-quarters-tablet">
 
           <h1 class="title is-1 main-title">
-            Sparse VideoGen
+            Sparse VideoGen & Quant VideoGen
           </h1>
 
           <p class="subtitle-text">
@@ -183,6 +201,19 @@
             </a>
           </div>
 
+          <!-- QVG Card -->
+          <div class="version-card qvg">
+            <div class="version-title">
+              Quant VideoGen
+            </div>
+            <div class="version-description">
+              Auto-regressive long video generation via 2-bit KV-cache quantization.
+            </div>
+            <a href="qvg/" class="version-button">
+              <i class="fas fa-arrow-right"></i> Access QVG
+            </a>
+          </div>
+
           <!-- Quick Links -->
           <div class="has-text-centered" style="margin-top: 3rem;">
             <h3 class="title is-4">Quick Links</h3>
@@ -205,9 +236,18 @@
                 <span>SVG2 arxiv</span>
               </a>
 
+              <!-- QVG arxiv -->
+              <a href="https://arxiv.org/abs/2602.02958" target="_blank" class="button"
+                style="background-color: #750014; color: white; border: none;">
+                <span class="icon">
+                  <i class="ai ai-arxiv"></i>
+                </span>
+                <span>QVG arxiv</span>
+              </a>
+
               <!-- Github Link -->
               <a href="https://github.com/svg-project/Sparse-VideoGen/" target="_blank" class="button"
-                style="background-color: #750014; color: white; border: none;">
+                style="background-color: #333; color: white; border: none;">
                 <span class="icon">
                   <i class="fab fa-github"></i>
                 </span>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Quant VideoGen: Auto-Regressive Long Video Generation via 2-Bit KV-Cache Quantization">
+  <meta property="og:title" content="Quant VideoGen" />
+  <meta property="og:description" content="Auto-Regressive Long Video Generation via 2-Bit KV-Cache Quantization" />
+  <meta property="og:url" content="https://svg-project.github.io/qvg/" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <meta name="twitter:title" content="Quant VideoGen">
+  <meta name="twitter:description" content="Auto-Regressive Long Video Generation via 2-Bit KV-Cache Quantization">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="keywords" content="Quant VideoGen, Video Generation, KV Cache, Quantization, Autoregressive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Quant VideoGen</title>
+  <link rel="icon" type="image/x-icon" href="../static/images/svglogo.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="../static/css/bulma.min.css">
+  <link rel="stylesheet" href="../static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="../static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="../static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="../static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="../static/js/fontawesome.all.min.js"></script>
+  <script src="../static/js/index.js"></script>
+
+  <style>
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 0.6rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: stretch;
+    }
+
+    .top-nav a {
+      flex: 1;
+      color: #555;
+      font-weight: 500;
+      font-size: 1.1rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0;
+      transition: color 0.2s, background 0.2s;
+      white-space: nowrap;
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .top-nav a:last-child {
+      border-right: none;
+    }
+
+    .top-nav a:hover {
+      color: #003262;
+      background: rgba(0, 50, 98, 0.05);
+    }
+
+    .top-nav a.active {
+      color: #003262;
+      font-weight: 700;
+      background: rgba(0, 50, 98, 0.06);
+    }
+
+    body {
+      padding-top: 2.8rem;
+    }
+
+    /* Pull selected figures slightly closer to preceding text */
+    .figure-pull-up {
+      margin-top: -2rem;
+    }
+
+    /* Mobile responsive styles */
+    @media screen and (max-width: 768px) {
+      .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .hero-body {
+        padding: 2rem 1rem;
+      }
+
+      .title.is-1 {
+        font-size: 2rem !important;
+      }
+
+      .title.is-3 {
+        font-size: 1.5rem !important;
+      }
+
+      .publication-title {
+        font-size: 1.8rem !important;
+        line-height: 1.2;
+      }
+
+      .publication-authors {
+        font-size: 0.9rem;
+      }
+
+      .button {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+      }
+
+      .figure-pull-up {
+        margin-top: -1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="top-nav">
+    <a href="../"><i class="fas fa-home"></i> Home</a>
+    <a href="../v1/">Sparse VideoGen</a>
+    <a href="../v2/">Sparse VideoGen 2</a>
+    <a href="../qvg/" class="active">Quant VideoGen</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-2 publication-title">Quant VideoGen: <br> Auto-Regressive Long Video Generation via
+              2-Bit KV-Cache Quantization
+            </h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://haochengxi.github.io/" target="_blank">Haocheng Xi</a><sup>*</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://andy-yang-1.github.io/" target="_blank">Shuo Yang</a><sup>*</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://happierpig.github.io/" target="_blank">Yilong Zhao</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://lmxyy.me/" target="_blank">Muyang Li</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://han-cai.github.io/" target="_blank">Han Cai</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://acm.sjtu.edu.cn/~xyli/" target="_blank">Xingyang Li</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://yujunlin.com/" target="_blank">Yujun Lin</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://zhuoyangz.com/" target="_blank">Zhuoyang Zhang</a>,
+              </span>
+              <span class="author-block">
+                <a href="blank" target="_blank">Jintao Zhang</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://xiuyuli.com/" target="_blank">Xiuyu Li</a>,
+              </span>
+              <span class="author-block">
+                Zhiying Xu,
+              </span>
+              <span class="author-block">
+                Jun Wu,
+              </span>
+              <span class="author-block">
+                <a href="https://www.chenfengx.com/" target="_blank">Chenfeng Xu</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://people.eecs.berkeley.edu/~istoica/" target="_blank">Ion Stoica</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://hanlab.mit.edu/songhan" target="_blank">Song Han</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://people.eecs.berkeley.edu/~keutzer/" target="_blank">Kurt Keutzer</a>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup> University of California, Berkeley</span>
+              <span class="author-block"><sup>2</sup> Massachusetts Institute of Technology</span>
+              <span class="author-block"><sup>3</sup> NVIDIA</span>
+              <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- Arxiv PDF link -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/pdf/2602.02958" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+
+                <!-- ArXiv abstract Link -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2602.02958" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+
+                <!-- Github link -->
+                <span class="link-block">
+                  <a href="https://github.com/svg-project/" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code (Coming Soon)</span>
+                  </a>
+                </span>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TL;DR -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">TL;DR</h2>
+          <div class="content has-text-justified">
+            <p>
+              Quant VideoGen (QVG) is a training-free KV-cache quantization framework for auto-regressive video
+              diffusion models. It exploits video's spatiotemporal redundancy through Semantic-Aware Smoothing and
+              Progressive Residual Quantization to compress the KV-cache down to 2-bit with near-lossless quality.
+              QVG reduces KV-cache memory by up to 7&times; with less than 4% latency overhead.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Overview -->
+  <section class="section hero">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Overview</h2>
+          <div class="content has-text-justified">
+            <p>
+              Auto-regressive video diffusion marks a paradigm shift in video generation: by enforcing temporal
+              causality, models like LongCat-Video, HY-WorldPlay, and Self-Forcing can generate long, streaming videos
+              incrementally. This enables applications ranging from live-streaming generation to interactive world models.
+            </p>
+            <p>
+              However, auto-regressive inference introduces a critical system and algorithm coupled bottleneck:
+              <strong>KV-cache memory</strong>. Unlike bidirectional models, auto-regressive models must retain a growing
+              KV-cache to condition on all previously generated frames. This cache grows linearly with history and
+              quickly dominates GPU memory.
+            </p>
+            <p>
+              More critically, KV-cache is not just an efficiency bottleneck. It is also a <strong>capability
+                bottleneck</strong>. When memory forces a truncated context window, the model's effective
+              working memory shrinks, directly degrading long-horizon consistency in identity, layout, and motion.
+              Retaining more history leads to substantially better generation quality.
+            </p>
+            <p>
+              QVG bridges this gap through the following approaches:
+            </p>
+            <ul style="list-style-position: inside;">
+              <li><strong>Semantic-Aware Smoothing</strong> exploits spatiotemporal redundancy to produce
+                quantization-friendly residuals.</li>
+              <li><strong>Progressive Residual Quantization</strong> is a coarse-to-fine multi-stage scheme that
+                further reduces quantization error.</li>
+            </ul>
+            <p>
+              QVG reduces KV-cache memory by up to about 7&times; compared to BF16 while adding less than 4% end-to-end
+              latency overhead. It also improves quantization error substantially relative to prior KV-cache quantization
+              baselines at similar compression.
+            </p>
+            <div class="container has-text-centered figure-pull-up">
+              <figure class="image is-inline-block" style="width: 100%; max-width: 100%;">
+                <img src="assets/overview_longcat_hyworldplay_comparison.png"
+                  alt="Overview: qualitative comparison on LongCat-Video and HY-WorldPlay with BF16, KIVI, and QVG">
+                <figcaption style="font-size: 0.8em; color: gray;">
+                  Overview: qualitative comparison on LongCat-Video and HY-WorldPlay at 480p. QVG tracks BF16 at a much
+                  smaller KV-cache footprint; KIVI shows visible degradation at similar compression.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Video KV-Cache Quantization is Hard -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Why Video KV-Cache Quantization is Challenging</h2>
+          <div class="content has-text-justified">
+            <p>
+              KV-cache quantization is well-studied for LLMs, with methods like KIVI and QuaRot achieving strong
+              results. However, <strong>naively applying these techniques to video diffusion leads to severe quality
+                degradation</strong>. The root cause lies in fundamentally different activation statistics:
+            </p>
+            <ul style="list-style-position: inside;">
+              <li><strong>Extremely large dynamic ranges</strong>: video models exhibit max |K| ~ 1e2 and max |V| ~
+                1e3, far exceeding typical LLM ranges.</li>
+              <li><strong>Heterogeneous outlier patterns</strong>: channels that are outliers for some tokens may not be
+                outliers for others, because tokens correspond to diverse spatial regions and motion patterns whose
+                relevance evolves over time.</li>
+            </ul>
+            <p>
+              These properties make standard per-channel or per-token quantization schemes brittle for video models,
+              motivating a video-specific approach that explicitly leverages the spatiotemporal structure of video data.
+            </p>
+            <div class="container has-text-centered figure-pull-up">
+              <figure class="image is-inline-block" style="width: 100%; max-width: 480px;">
+                <img src="assets/kv_cache_motivation_full_sliding_window_vs_qvg.png"
+                  alt="Full KV cache runs out of memory; sliding window degrades quality; QVG keeps quality with efficient KV">
+                <figcaption style="font-size: 0.8em; color: gray;">
+                  Full KV-cache can run out of memory on long rollouts; a sliding window saves memory but hurts quality;
+                  QVG keeps long-horizon visual quality with a compact quantized KV-cache.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Semantic-Aware Smoothing -->
+  <section class="section hero">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Semantic-Aware Smoothing</h2>
+          <div class="content has-text-justified">
+            <p>
+              The key observation behind QVG is that video KV-cache exhibits <strong>strong spatiotemporal
+                redundancy</strong>: tokens that are spatially or temporally adjacent tend to be numerically similar
+              in latent space. A fixed spatial patch across consecutive frames changes slowly (temporal redundancy),
+              and nearby patches within the same frame share similar features (spatial redundancy).
+            </p>
+            <p>
+              Semantic-Aware Smoothing exploits this redundancy through two steps:
+            </p>
+            <p>
+              <strong>Step 1: Semantic-based grouping.</strong>
+              We apply the k-means algorithm on the KV-cache along the sequence dimension to partition tokens into
+              semantically similar groups. Tokens within the same group exhibit significantly more homogeneous value
+              distributions, since they share similar spatial and temporal characteristics.
+            </p>
+            <p>
+              <strong>Step 2: Centroid subtraction.</strong>
+              For each group, we subtract its centroid (mean value) to obtain a residual tensor. Since the large-magnitude
+              values are shared across semantically similar tokens and captured by the centroid, the resulting residuals
+              have a <strong>much smaller magnitude</strong> and more concentrated distribution around zero &mdash; an
+              ideal target for low-bit quantization.
+            </p>
+            <p>
+              This simple yet effective technique reduces quantization error by <strong>~6.9&times; for keys</strong> and
+              <strong>~2.6&times; for values</strong> across all precision choices, without any training or fine-tuning.
+            </p>
+            <div class="container has-text-centered">
+              <figure class="image is-inline-block" style="width: 100%; max-width: 100%;">
+                <img src="assets/semantic_aware_smoothing_kv_distribution.png"
+                  alt="Semantic-Aware Smoothing: grouping, centroid subtraction, and distribution of K cache values">
+                <figcaption style="font-size: 0.8em; color: gray;">
+                  Semantic-based grouping and centroid subtraction make the K cache regular and easy to quantize; the
+                  residual distribution is sharply peaked near zero.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Progressive Residual Quantization -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Progressive Residual Quantization</h2>
+          <div class="content has-text-justified">
+            <p>
+              Inspired by streaming video codecs that progressively encode multi-scale representations, QVG introduces
+              <strong>Progressive Residual Quantization</strong> &mdash; a coarse-to-fine scheme that iteratively
+              refines quantization in multiple stages.
+            </p>
+            <p>
+              Starting from the initial residual (output of Semantic-Aware Smoothing), each subsequent stage applies
+              Semantic-Aware Smoothing again on the remaining residual to capture finer-grained details. After
+              <em>T</em> stages, the final residual is quantized to low-bit integers, while the centroids and
+              assignment vectors from all stages are stored as compact metadata.
+            </p>
+            <p>
+              The first stage provides the dominant error reduction (<strong>5.83&times; MSE reduction</strong> vs. naive
+              quantization). Subsequent stages continue to improve quality with diminishing returns, enabling a
+              <strong>smooth trade-off between quality and compression</strong> by simply adjusting the number of stages.
+            </p>
+            <p>
+              For reconstruction, the process is reversed: starting from the quantized output, centroids are
+              progressively added back from the last stage to the first, faithfully recovering the original tensor.
+            </p>
+            <div class="container has-text-centered">
+              <figure class="image is-inline-block" style="width: 100%; max-width: 100%;">
+                <img src="assets/progressive_residual_quantization_pipeline.png"
+                  alt="Overview of Semantic-Aware Smoothing and Progressive Residual Quantization on KV cache">
+                <figcaption style="font-size: 0.8em; color: gray;">
+                  From original KV cache through Semantic-Aware Smoothing to low-bit quantized values; quantization error
+                  drops substantially after the pipeline.
+                </figcaption>
+              </figure>
+            </div>
+            <div class="container has-text-centered">
+              <figure class="image is-inline-block" style="width: 100%; max-width: 360px;">
+                <img src="assets/progressive_residual_quantization_mse_by_stage.png"
+                  alt="MSE reduction factor vs. number of Progressive Residual Quantization stages">
+                <figcaption style="font-size: 0.8em; color: gray;">
+                  MSE reduction vs. naive quantization as a function of PRQ stage count; the first stage dominates, with
+                  diminishing returns afterward.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- System Optimizations -->
+  <section class="section hero">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Efficient Algorithm-System Co-design</h2>
+          <div class="content has-text-justified">
+            <p>
+              QVG incorporates several system-level optimizations to minimize latency overhead:
+            </p>
+            <ul style="list-style-position: inside;">
+              <li><strong>Streaming centroid caching</strong>: the k-means centroids from the previous video chunk are
+                reused to initialize clustering for the next chunk, reducing k-means overhead by 3&times;.</li>
+              <li><strong>Fused dequantization kernel</strong>: a custom CUDA kernel that dequantizes the tensor and
+                adds back assigned centroids for all Progressive Residual Quantization stages in a single pass, keeping
+                intermediate results in registers to avoid redundant global memory accesses.</li>
+              <li><strong>FP8 scaling factors</strong>: scaling factors are stored in FP8 E4M3 format to further reduce
+                memory overhead.</li>
+            </ul>
+            <p>
+              These optimizations ensure that QVG introduces only <strong>1.5%&ndash;4.3% end-to-end latency
+                overhead</strong> across different models, making it practical for real-time deployment.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Results -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Key Results</h2>
+          <div class="content has-text-justified">
+            <p>
+              QVG is evaluated on three auto-regressive video generation models &mdash; LongCat-Video-13B,
+              HY-WorldPlay-8B, and Self-Forcing-Wan-1.3B &mdash; and consistently outperforms all baselines
+              (RTN, KIVI, QuaRot) in both quality and compression:
+            </p>
+
+            <h3 class="title is-5">Compression &amp; Quality</h3>
+            <ul style="list-style-position: inside;">
+              <li><strong>LongCat-Video-13B</strong>: 6.94&times; KV-cache compression with PSNR 28.7. Baselines
+                at similar compression achieve only PSNR ~20&ndash;21.</li>
+              <li><strong>HY-WorldPlay-8B</strong>: 7.05&times; compression with PSNR 29.2, while baselines achieve
+                PSNR ~24&ndash;25.</li>
+              <li>All VBench perceptual metrics (Background Consistency, Image Quality, Subject Consistency, Aesthetic
+                Quality) remain <strong>near-lossless</strong> for QVG, while baselines degrade significantly under
+                INT2.</li>
+            </ul>
+
+            <h3 class="title is-5">Long-Horizon Stability</h3>
+            <ul style="list-style-position: inside;">
+              <li>On Self-Forcing, QVG maintains near-lossless image quality <strong>even at 700+ frames</strong>,
+                while all baselines experience sharp degradation after ~100 frames.</li>
+              <li>On the same hardware, QVG enables longer effective context lengths, which translates to
+                <strong>improved quality that can surpass BF16 under the original cache budget</strong>.</li>
+            </ul>
+
+            <h3 class="title is-5">Deployment Milestone</h3>
+            <ul style="list-style-position: inside;">
+              <li>QVG makes it possible to run <strong>HY-WorldPlay-8B on a single RTX 4090</strong> for the first
+                time, achieving PSNR &gt;29 relative to BF16 &mdash; previously infeasible due to memory constraints.
+              </li>
+              <li>End-to-end latency overhead: <strong>2.1%</strong> (LongCat), <strong>1.5%</strong> (HY-WorldPlay),
+                <strong>4.3%</strong> (Self-Forcing).</li>
+            </ul>
+            <div class="container has-text-centered">
+              <figure class="image is-inline-block" style="width: 100%;">
+                <img src="assets/benchmark_compression_quality_table.png"
+                  alt="Main benchmark table: compression ratio and quality metrics on LongCat-Video-13B and HY-WorldPlay-8B">
+                <figcaption style="font-size: 0.8em; color: gray;">
+                  Main results on LongCat-Video-13B and HY-WorldPlay-8B at 480p (INT2 and INT4 KV cache): compression
+                  ratio vs. fidelity and VBench-style metrics.
+                </figcaption>
+              </figure>
+            </div>
+            <div class="container has-text-centered">
+              <figure class="image is-inline-block" style="width: 100%; max-width: 100%;">
+                <img src="assets/selfforcing_imaging_quality_vs_frame_count.png"
+                  alt="Imaging quality vs. frame count on Self-Forcing for INT2 and INT4 KV cache">
+                <figcaption style="font-size: 0.8em; color: gray;">
+                  Self-Forcing: imaging quality along long rollouts under INT2 and INT4 KV cache; QVG and QVG-Pro track
+                  the BF16 baseline while prior quantization methods degrade.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code id="bibtex-code">
+@article{xi2026quant,
+  title={Quant VideoGen: Auto-Regressive Long Video Generation via 2-Bit KV-Cache Quantization},
+  author={Xi, Haocheng and Yang, Shuo and Zhao, Yilong and Li, Muyang and Cai, Han and Li, Xingyang and Lin, Yujun and Zhang, Zhuoyang and Zhang, Jintao and Li, Xiuyu and others},
+  journal={arXiv preprint arXiv:2602.02958},
+  year={2026}
+}
+    </code></pre>
+      <button class="button is-dark" onclick="copyBibTex()">Copy BibTeX</button>
+    </div>
+  </section>
+
+  <script>
+    function copyBibTex() {
+      var copyText = document.getElementById("bibtex-code").innerText;
+      navigator.clipboard.writeText(copyText).then(function () {
+        alert("BibTeX copied to clipboard!");
+      }, function (err) {
+        alert("Failed to copy BibTeX: ", err);
+      });
+    }
+  </script>
+  <!--End BibTex citation -->
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template"
+                target="_blank">Academic Project Page Template</a> which was adopted from the <a
+                href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+              You are free to borrow the source code of this website, we just ask that you link back to this page in the
+              footer. <br> This website is licensed under a <a rel="license"
+                href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+                Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
