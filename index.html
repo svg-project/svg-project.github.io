@@ -100,6 +100,24 @@
       text-decoration: none;
     }
 
+    .version-card.v3 {
+      background: linear-gradient(135deg, #FF6B6B 0%, #ee5a52 100%);
+      color: white;
+    }
+
+    .version-card.v3 .version-button {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+
+    .version-card.v3 .version-button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      color: white;
+      text-decoration: none;
+    }
+
     .version-card.qvg .version-button {
       background: rgba(255, 255, 255, 0.2);
       border: 2px solid rgba(255, 255, 255, 0.3);
@@ -201,6 +219,19 @@
             </a>
           </div>
 
+          <!-- Version 3 Card - SVG-EAR -->
+          <div class="version-card v3">
+            <div class="version-title">
+              Sparse VideoGen EAR
+            </div>
+            <div class="version-description">
+              Mitigate sparse attention errors with error-aware routing and linear compensation.
+            </div>
+            <a href="v3/" class="version-button">
+              <i class="fas fa-arrow-right"></i> Access SVG-EAR
+            </a>
+          </div>
+
           <!-- QVG Card -->
           <div class="version-card qvg">
             <div class="version-title">
@@ -231,9 +262,18 @@
               <a href="https://arxiv.org/abs/2505.18875/" target="_blank" class="button"
                 style="background-color: #FDB515; color: black; border: none;">
                 <span class="icon">
-                  <i class="fab fa-github"></i>
+                  <i class="ai ai-arxiv"></i>
                 </span>
                 <span>SVG2 arxiv</span>
+              </a>
+
+              <!-- SVG-EAR arxiv -->
+              <a href="https://arxiv.org/abs/2603.08982" target="_blank" class="button"
+                style="background-color: #FF6B6B; color: white; border: none;">
+                <span class="icon">
+                  <i class="ai ai-arxiv"></i>
+                </span>
+                <span>SVG-EAR arxiv</span>
               </a>
 
               <!-- QVG arxiv -->

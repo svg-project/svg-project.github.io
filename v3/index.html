@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="SVG-EAR: Parameter-Free Linear Compensation for Sparse Video Generation via Error-Aware Routing">
+  <meta property="og:title" content="SVG-EAR: Parameter-Free Linear Compensation for Sparse Video Generation" />
+  <meta property="og:description" content="SVG-EAR achieves up to 1.93× speedup while maintaining generation fidelity via error-aware routing and parameter-free linear compensation." />
+  <meta property="og:url" content="https://svg-project.github.io/v3/" />
+  <meta property="og:image" content="assets/images/svg-ear-preview.png" />
+  <meta property="og:image:width" content="826" />
+  <meta property="og:image:height" content="656" />
+
+  <meta name="twitter:title" content="SVG-EAR: Efficient Sparse Video Generation">
+  <meta name="twitter:description" content="SVG-EAR achieves up to 1.93× speedup on HunyuanVideo via error-aware routing and parameter-free linear compensation.">
+  <meta name="twitter:image" content="assets/images/svg-ear-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="keywords" content="Sparse Video Generation, Efficient Attention, Video Diffusion Models, Error-Aware Routing, Linear Compensation, DiT">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>SVG-EAR: Parameter-Free Linear Compensation for Sparse Video Generation</title>
+  <link rel="icon" type="image/x-icon" href="assets/images/svg-ear-favicon.ico">
+  <link rel="apple-touch-icon" href="assets/images/svg-ear-favicon.png">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="../static/css/bulma.min.css">
+  <link rel="stylesheet" href="../static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="../static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="../static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="../static/css/index.css">
+
+  <!-- MathJax for LaTeX formula rendering -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        tags: 'ams'
+      },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+
+  <!-- Picture Modal Box Style -->
+  <style>
+    .image-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      cursor: pointer;
+    }
+
+    .image-modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .image-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 35px;
+      color: #ffffff;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 1001;
+      transition: color 0.3s;
+    }
+
+    .image-modal-close:hover {
+      color: #cccccc;
+    }
+
+    .image-modal-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ffffff;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 20px;
+      user-select: none;
+      transition: color 0.3s;
+      z-index: 1001;
+    }
+
+    .image-modal-nav:hover {
+      color: #cccccc;
+    }
+
+    .image-modal-prev {
+      left: 20px;
+    }
+
+    .image-modal-next {
+      right: 20px;
+    }
+
+    .clickable-image {
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+
+    .clickable-image:hover {
+      opacity: 0.8;
+    }
+
+    .image-modal-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ffffff;
+      text-align: center;
+      font-size: 16px;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px 20px;
+      border-radius: 4px;
+      max-width: 80%;
+    }
+
+    @media (max-width: 768px) {
+      .image-modal-content {
+        max-width: 95%;
+        max-height: 85%;
+      }
+
+      .image-modal-close {
+        top: 10px;
+        right: 15px;
+        font-size: 30px;
+      }
+
+      .image-modal-nav {
+        font-size: 24px;
+        padding: 15px;
+      }
+
+      .image-modal-prev {
+        left: 10px;
+      }
+
+      .image-modal-next {
+        right: 10px;
+      }
+
+      .image-modal-caption {
+        font-size: 14px;
+        bottom: 10px;
+        padding: 8px 15px;
+      }
+    }
+
+    /* Image Gallery Grid Styles */
+    .image-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      grid-template-rows: repeat(20, 1fr);
+      gap: 10px;
+      width: 100vw;
+      height: 150vh;
+      margin: 0 auto;
+      padding: 80px;
+      max-width: none;
+    }
+
+    /* Mobile-specific adjustments for gallery container */
+    @media (max-width: 768px) {
+      .image-gallery-grid {
+        padding: 10px !important;
+      }
+    }
+
+    .gallery-item {
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .image-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      padding: 5px;
+    }
+
+    /* Center all figure elements and images */
+    figure {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    figure img {
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Grid positioning - 16x20 layout */
+    .item-1-1 {
+      grid-column: 1 / 5;
+      grid-row: 1 / 6;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .item-1-2 {
+      grid-column: 5 / 13;
+      grid-row: 1 / 6;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .item-1-3 {
+      grid-column: 13 / 17;
+      grid-row: 1 / 6;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .item-2-1 {
+      grid-column: 1 / 4;
+      grid-row: 6/ 12;
+      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+
+    .item-2-2 {
+      grid-column: 4 / 9;
+      grid-row: 6 / 12;
+      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
+
+    .item-2-3 {
+      grid-column: 9 / 14;
+      grid-row: 6 / 12;
+      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+
+    .item-2-4 {
+      grid-column: 14 / 17;
+      grid-row: 6 / 12;
+      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
+
+    .item-3-1 {
+      grid-column: 1 / 5;
+      grid-row: 12 / 16;
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    }
+
+    .item-3-2 {
+      grid-column: 13 / 17;
+      grid-row: 12 / 17;
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    }
+
+    .item-3-3 {
+      grid-column: 5 / 8;
+      grid-row: 12 / 15;
+      background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+    }
+
+    .item-3-4 {
+      grid-column: 8 / 13;
+      grid-row: 12 / 15;
+      background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+    }
+
+    .item-3-5 {
+      grid-column: 5 / 9;
+      grid-row: 15 / 18;
+      background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+    }
+
+    .item-3-6 {
+      grid-column: 9 / 13;
+      grid-row: 15 / 18;
+      background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+    }
+
+    .item-4-1 {
+      grid-column: 1 / 5;
+      grid-row: 16 / 21;
+      background: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
+    }
+
+    .item-4-2 {
+      grid-column: 13 / 17;
+      grid-row: 17 / 21;
+      background: linear-gradient(135deg, #ee9ca7 0%, #ffdde1 100%);
+    }
+
+    .item-4-3 {
+      grid-column: 5 / 10;
+      grid-row: 18 / 21;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: 2px dashed #3273dc;
+    }
+
+    .item-4-4 {
+      grid-column: 10 / 13;
+      grid-row: 18 / 21;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: 2px dashed #3273dc;
+    }
+
+    /* Responsive design for gallery */
+    @media (max-width: 768px) {
+      .image-gallery-grid {
+        grid-template-columns: repeat(16, 1fr);
+        grid-template-rows: repeat(20, 1fr);
+        width: 95vw;
+        height: 60vh;
+        gap: 4px;
+        padding: 10px;
+        margin: 0;
+      }
+
+      .item-1-1 {
+        grid-column: 1 / 5;
+        grid-row: 1 / 6;
+      }
+
+      .item-1-2 {
+        grid-column: 5 / 13;
+        grid-row: 1 / 6;
+      }
+
+      .item-1-3 {
+        grid-column: 13 / 17;
+        grid-row: 1 / 6;
+      }
+
+      .item-2-1 {
+        grid-column: 1 / 4;
+        grid-row: 6 / 12;
+      }
+
+      .item-2-2 {
+        grid-column: 4 / 9;
+        grid-row: 6 / 12;
+      }
+
+      .item-2-3 {
+        grid-column: 9 / 14;
+        grid-row: 6 / 12;
+      }
+
+      .item-2-4 {
+        grid-column: 14 / 17;
+        grid-row: 6 / 12;
+      }
+
+      .item-3-1 {
+        grid-column: 1 / 5;
+        grid-row: 12 / 16;
+      }
+
+      .item-3-2 {
+        grid-column: 13 / 17;
+        grid-row: 12 / 16;
+      }
+
+      .item-3-3 {
+        grid-column: 5 / 8;
+        grid-row: 12 / 15;
+      }
+
+      .item-3-4 {
+        grid-column: 8 / 13;
+        grid-row: 12 / 15;
+      }
+
+      .item-3-5 {
+        grid-column: 5 / 9;
+        grid-row: 15 / 18;
+      }
+
+      .item-3-6 {
+        grid-column: 9 / 13;
+        grid-row: 15 / 18;
+      }
+
+      .item-4-1 {
+        grid-column: 1 / 5;
+        grid-row: 16 / 21;
+      }
+
+      .item-4-2 {
+        grid-column: 13 / 17;
+        grid-row: 17 / 21;
+      }
+
+      .item-4-3 {
+        grid-column: 5 / 10;
+        grid-row: 18 / 21;
+      }
+
+      .item-4-4 {
+        grid-column: 10 / 13;
+        grid-row: 18 / 21;
+      }
+
+      .image-placeholder {
+        font-size: 8px;
+      }
+
+      /* Additional mobile responsive styles */
+      .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      /* Mobile gallery section specific styles */
+      .section.hero {
+        padding: 0 !important;
+      }
+
+      .container.is-fluid {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: none !important;
+      }
+
+      .columns.is-centered {
+        margin: 0 !important;
+      }
+
+      .column {
+        padding: 0 !important;
+      }
+
+      .hero-body {
+        padding: 2rem 1rem;
+      }
+
+      .title.is-2 {
+        font-size: 1.8rem !important;
+      }
+
+      .publication-title {
+        font-size: 1.6rem !important;
+        line-height: 1.2;
+      }
+
+      .publication-authors {
+        font-size: 0.9rem;
+      }
+
+      .button {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        margin: 0.25rem;
+      }
+
+      .results-carousel .item {
+        padding: 10px;
+      }
+
+      .publication-video {
+        margin: 1rem 0;
+      }
+    }
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="../static/js/fontawesome.all.min.js"></script>
+  <script src="../static/js/bulma-carousel.min.js"></script>
+  <script src="../static/js/bulma-slider.min.js"></script>
+  <script src="../static/js/index.js"></script>
+</head>
+
+<body>
+
+  <!-- Hero / Title Section -->
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-2 publication-title">SVG-EAR: Parameter-Free Linear Compensation for Sparse Video
+              Generation via Error-Aware Routing
+            </h1>
+            <div class="is-size-5 publication-authors">
+              <!-- Paper authors -->
+              <span class="author-block">
+                <a href="https://github.com/dyxg" target="_blank">Xuanyi Zhou</a><sup>*</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://joyemang33.github.io/" target="_blank">Qiuyang Mang</a><sup>*</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://andy-yang-1.github.io/" target="_blank">Shuo Yang</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://haochengxi.github.io/" target="_blank">Haocheng Xi</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://jt-zhang.github.io/" target="_blank">Jintao Zhang</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://huanzhimao.com/" target="_blank">Huanzhi Mao</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://people.eecs.berkeley.edu/~jegonzal/" target="_blank">Joseph E. Gonzalez</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://people.eecs.berkeley.edu/~keutzer/" target="_blank">Kurt Keutzer</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://people.eecs.berkeley.edu/~istoica/" target="_blank">Ion Stoica</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://people.eecs.berkeley.edu/~akcheung/" target="_blank">Alvin Cheung</a>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup> University of California, Berkeley</span>
+              <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span>
+              <br><span style="color: #dc2626; font-weight: bold;">arXiv:2603.08982</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- Arxiv PDF link -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2603.08982" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+
+                <!-- Github link -->
+                <span class="link-block">
+                  <a href="https://github.com/dyxg/SVG-EAR" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+
+                <!-- ArXiv abstract Link -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2603.08982" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+
+                <!-- Twitter link -->
+                <span class="link-block">
+                  <a href="#" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-twitter"></i>
+                    </span>
+                    <span>Twitter</span>
+                  </a>
+                </span>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Image Gallery Section -->
+  <section class="section hero" style="padding: 0px 0;">
+    <div class="container is-fluid" style="padding: 0; margin: 0; max-width: none;">
+      <div class="columns is-centered has-text-centered" style="margin: 0;">
+        <div class="column" style="padding: 0;">
+          <h1 class="title is-4 mb-4" style="padding: 20px 0;">Gallery - All videos are generated by SVG-EAR!</h1>
+
+          <!-- Custom Grid Layout -->
+          <div class="image-gallery-grid">
+            <!-- Row 1: 3 items (narrow, wide, narrow) -->
+            <div class="gallery-item item-1-1 clickable-image" data-video="./assets/video/0-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/0-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-1-2 clickable-image" data-video="./assets/video/1-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/1-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-1-3 clickable-image" data-video="./assets/video/2-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/2-0.mp4" type="video/mp4">
+              </video>
+            </div>
+
+            <!-- Row 2: 4 items -->
+            <div class="gallery-item item-2-1 clickable-image" data-video="./assets/video/3-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/3-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-2-2 clickable-image" data-video="./assets/video/4-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/4-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-2-3 clickable-image" data-video="./assets/video/5-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/5-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-2-4 clickable-image" data-video="./assets/video/6-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/6-0.mp4" type="video/mp4">
+              </video>
+            </div>
+
+            <!-- Row 3: Mixed layout -->
+            <div class="gallery-item item-3-1 clickable-image" data-video="./assets/video/7-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/7-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-3-2 clickable-image" data-video="./assets/video/8-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/8-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-3-3 clickable-image" data-video="./assets/video/9-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/9-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-3-4 clickable-image" data-video="./assets/video/10-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/10-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-3-5 clickable-image" data-video="./assets/video/11-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/11-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-3-6 clickable-image" data-video="./assets/video/12-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/12-0.mp4" type="video/mp4">
+              </video>
+            </div>
+
+            <!-- Bottom row -->
+            <div class="gallery-item item-4-1 clickable-image" data-video="./assets/video/13-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/13-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-4-2 clickable-image" data-video="./assets/video/14-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/14-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-4-3 clickable-image" data-video="./assets/video/15-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/15-0.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="gallery-item item-4-4 clickable-image" data-video="./assets/video/16-0.mp4">
+              <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <source src="./assets/video/16-0.mp4" type="video/mp4">
+              </video>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TL;DR -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">TL;DR</h2>
+          <div class="content has-text-justified">
+            <p>
+              SVG-EAR accelerates video Diffusion Transformers by up to <strong>1.93x</strong> (PSNR = 31) using parameter-free <strong>linear compensation</strong> and <strong>error-aware routing</strong> to maintain high generation fidelity without any training overhead.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Teaser Figure -->
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <img src="./assets/images/Teaser.png" alt="SVG-EAR teaser: speedup vs PSNR on Wan2.2 and HunyuanVideo"
+          class="clickable-image" style="display: block; margin: 0 auto; width: 100%; border-radius: 8px;">
+        <h2 class="subtitle has-text-centered">
+          SVG-EAR significantly accelerates video generation for Wan2.2 and HunyuanVideo. On a single NVIDIA H100 GPU,
+          achieving 1.81&times; and 1.93&times; speedups with 26 and 30 PSNR, respectively.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <video poster="" id="quality-comparison" autoplay controls muted loop height="100%">
+          <source src="./assets/video/dense_svg_ear_comparison.mp4" type="video/mp4">
+        </video>
+        <h2 class="subtitle has-text-centered">
+          Full attention and sparse attention remain visually close across multiple Wan2.2 and HunyuanVideo samples,
+          while the difference maps stay near-white for most regions.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <video poster="" id="wan-t2v-flash-comparison" autoplay controls muted loop height="100%">
+          <source src="./assets/video/wan_t2v_full_vs_sap2.mp4" type="video/mp4">
+        </video>
+        <h2 class="subtitle has-text-centered">
+          Full Attention and SVG-EAR evolution clips appear as two sliding strips, with smooth progress bars and a
+          final count comparison for the same playback window.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abstract / Overview -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Overview</h2>
+          <div class="content has-text-justified">
+            <p>
+              Diffusion Transformers (DiTs) have become a leading backbone for video generation, yet their quadratic
+              attention cost remains a major bottleneck. Sparse attention reduces this cost by computing only a subset of
+              attention blocks. However, prior methods often either drop the remaining blocks or rely on learned predictors to approximate them, introducing training overhead and potential
+              output distribution shifting.
+            </p>
+            <p>
+              In this paper, we show that the missing contributions can be recovered <em>without training</em>: after
+              semantic clustering, keys and values within each block exhibit strong similarity and can be well summarized
+              by a small set of cluster centroids. Based on this observation, we introduce SVG-EAR, a parameter-free
+              linear compensation branch that uses the centroid to approximate skipped blocks and recover their
+              contributions. While centroid compensation is accurate for most blocks, it can fail on a small subset.
+              Standard sparsification typically selects blocks by attention scores, which indicate where the model places
+              its attention mass, but not where the approximation error would be largest.
+            </p>
+            <p>
+              SVG-EAR therefore performs <strong>error-aware routing</strong>: a lightweight probe estimates the
+              compensation error for each block, and we compute exactly the blocks with the highest error-to-cost ratio
+              while compensating for skipped blocks. We provide theoretical guarantees that relate attention
+              reconstruction error to clustering quality, and empirically show that SVG-EAR improves the
+              quality-efficiency trade-off, achieving up to <strong>1.77&times;</strong> and
+              <strong>1.93&times;</strong> speedups while maintaining PSNRs of up to <strong>29.759</strong> and
+              <strong>31.043</strong> on Wan2.2 and HunyuanVideo, respectively.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Motivation: Limitations of Current Sparse Attention -->
+  <section class="section hero">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Limitations of Current Sparse Attention Algorithms</h2>
+          <div class="content has-text-justified">
+            <p>
+              Previous works exploit the inherent sparsity in attention maps to accelerate DiTs. They first cluster
+              semantically similar tokens and permute them so that tokens within each cluster are laid out contiguously,
+              turning the attention matrix into a block structure. Then, only a subset of blocks is computed exactly
+              while the rest are ignored.
+            </p>
+            <p>
+              However, existing methods face two fundamental problems:
+            </p>
+            <p>
+              <strong>Information Loss from Dropping Blocks.</strong> Existing sparse methods select blocks based on
+              approximated attention scores and simply ignore low-score blocks. However, low-score blocks can still
+              collectively carry important global context (e.g., background consistency, long-range semantic coupling).
+              Naively discarding them incurs non-trivial information loss and perceptible quality degradation.
+            </p>
+            <p>
+              <strong>Score-Based Routing is Misaligned with Compensation Error.</strong> Once a linear compensation
+              branch is introduced, conventional score-based routing becomes misaligned with the objective of
+              controlling the final approximation error. A high-score block may be highly coherent within its cluster
+              and thus well approximated by its centroid. Conversely, a low-score
+              block can contain diverse key-value interactions where centroid-based compensation induces substantial
+              error.
+            </p>
+
+            <figure class="image is-fullwidth" style="margin-left: 0; margin-right: 0;">
+              <img src="./assets/images/motivation.png"
+                alt="Motivation: existing methods fail due to dropping low-score blocks and error-unaware selection"
+                class="clickable-image" style="width: 100%; border-radius: 8px;">
+              <figcaption style="font-size: 0.8em; color: gray; margin-top: 0.5rem;">
+                Figure: Existing methods fail — dropping "low-score" blocks and error-unaware block selection degrade
+                the error-density trade-off. (a) Original attention map. (b) Permuted map after semantic-aware
+                clustering. (c) Ignoring low-score blocks causes a large, sparse attention error. (d) Linear
+                compensation with cluster means still yields high error due to naive top-p selection. (e) Our method
+                improves both error and density by routing based on the gap between full computation and compensation.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Methodology: SVG-EAR -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Methodology: SVG-EAR</h2>
+
+          <div class="content has-text-justified">
+            <p>
+              SVG-EAR introduces <strong>parameter-free linear compensation</strong> combined with
+              <strong>error-aware routing</strong> to achieve a superior quality-efficiency trade-off.
+            </p>
+
+            <h3 class="title is-5">Algorithm Overview</h3>
+            <ol>
+            <li>
+                <strong>Semantic Clustering:</strong>
+                Queries and keys are clustered using flash k-means to rearrange tokens so that semantically similar ones are positioned contiguously. This process partitions the attention map into a block structure where tokens within each cluster exhibit high inner-block similarity.
+              </li>
+              <li>
+                <strong>Error-Aware Routing:</strong>
+                Instead of selecting blocks based on attention scores, this method identifies blocks where centroid-based approximation would fail. It uses a lightweight probe to estimate the compensation error for each block, using query cluster centroids as proxies to reduce complexity from quadratic to near-linear. Blocks with the highest error-to-size ratio are greedily selected for exact computation under a fixed density budget.
+              </li>
+              <li>
+                <strong>Linear Compensation:</strong>
+                For blocks not selected for exact attention, the method applies a parameter-free linear branch that uses cluster centroids to recover lost contributions. Within these blocks, individual keys are replaced by their respective centroids, reducing the interaction to a single logit and a scalar-vector product. This approach mitigates information loss without requiring additional training or learned predictors.
+              </li>
+            </ol>
+
+            <figure class="image is-fullwidth" style="margin-left: 0; margin-right: 0;">
+              <img
+                src="./assets/images/methodology.png"
+                alt="Methodology overview of SVG-EAR"
+                class="clickable-image"
+                style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(13, 32, 63, 0.12);">
+              <figcaption style="font-size: 0.8em; color: gray; margin-top: 0.5rem;">
+                Figure: Static overview of the SVG-EAR pipeline, including semantic clustering, error-aware routing,
+                and centroid-based linear compensation.
+              </figcaption>
+            </figure>
+
+            <figure class="image is-fullwidth" style="margin: 1.25rem 0 0;">
+              <video
+                poster="./assets/images/methodology.png"
+                autoplay
+                controls
+                muted
+                loop
+                playsinline
+                style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(13, 32, 63, 0.18); background: #08111f;">
+                <source src="./assets/video/methodology_demo.mp4" type="video/mp4">
+              </video>
+              <figcaption style="font-size: 0.8em; color: gray; margin-top: 0.5rem;">
+                Video: Animated overview of SVG-EAR. It walks through the initial attention map, block zoom-in,
+                probe-based attention generation, estimated vs. true error computation, dynamic error-aware selection,
+                and the final rendered attention map.
+              </figcaption>
+            </figure>
+
+            <!-- <h3 class="title is-5" style="margin-top: 1.5rem;">Theoretical Guarantee</h3>
+            <p>
+              We provide an upper bound that relates the true attention-map reconstruction error to our estimated error:
+            </p>
+            <div style="background: #f8f9fa; padding: 1rem 1.5rem; border-radius: 10px; margin: 1rem 0; border-left: 4px solid #3273dc;">
+              <p style="text-align: center; margin-bottom: 0.5rem;">
+                $$\frac{1}{N_q N_k}\|\tilde{A}_{\text{sparse}}^{(M)} - A_{\text{full}}\|^2_F \;\leq\;
+                \frac{2}{N_q N_k} \sum_{i,j} (1-M^{(i)}_j)\, \frac{\hat{\epsilon}_{i,j}^2}{Z_i^2}
+                \;+\; \frac{8\delta_q^2 K_{\max}^2}{N_k d}$$
+              </p>
+              <p style="text-align: center; font-size: 0.9em; color: #555;">
+                where \(\delta_q^2\) is the average squared clustering error, \(K_{\max}\) is the maximum key
+                \(\ell_2\) norm, and \(Z_i\) is the softmax normalizer for query \(i\). As clustering improves
+                (\(\delta_q^2 \to 0\)) or sequence length \(N_k\) grows, the bound becomes asymptotically tight.
+              </p>
+            </div>
+
+            <h3 class="title is-5">Linear Compensation</h3>
+            <p>
+              For blocks assigned to compensation, all keys within a cluster share a common approximate attention weight
+              derived from the cluster mean. This yields a single logit and a single scalar-vector product per
+              query-cluster pair, reducing the overall time complexity to
+              \(\mathcal{O}\!\left((N_q C_k + \rho N_k N_q)\cdot d\right)\).
+            </p>
+
+            <h3 class="title is-5">Efficient Kernel Implementation</h3>
+            <p>
+              A custom Triton kernel fuses error estimation with a streaming update scheme to avoid materializing
+              intermediate logits in HBM. This achieves up to <strong>13.74&times; speedup</strong> over the vanilla
+              PyTorch implementation, keeping routing overhead to only <strong>6.5%</strong> of total end-to-end
+              latency on Wan2.2 T2V (720p) inference.
+            </p> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quantitative Results -->
+  <section class="section hero">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Quantitative Evaluation</h2>
+          <div class="content has-text-justified">
+            <p>
+              We evaluate SVG-EAR on Wan2.2-I2V/T2V-A14B and HunyuanVideo-T2V-13B at 720p resolution, comparing
+              against SpargeAttn, SVG, and SVG2. SVG-EAR consistently outperforms all baselines across PSNR, LPIPS, and
+              SSIM while simultaneously achieving the highest speedup.
+            </p>
+          </div>
+
+          <!-- Results Table -->
+          <div class="content">
+            <h3 class="title is-5">Wan 2.2 14B &mdash; 720P Image-to-Video</h3>
+            <div style="overflow-x: auto;">
+              <table class="table is-bordered is-striped is-narrow is-fullwidth" style="font-size: 0.85em;">
+                <thead>
+                  <tr>
+                    <th>Config</th>
+                    <th>PSNR&uarr;</th>
+                    <th>SSIM&uarr;</th>
+                    <th>LPIPS&darr;</th>
+                    <th>ImgQual&uarr;</th>
+                    <th>SubCons&uarr;</th>
+                    <th>Density&darr;</th>
+                    <th>FLOP&darr;</th>
+                    <th>Speedup&uarr;</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><em>Baseline</em></td>
+                    <td>—</td><td>—</td><td>—</td>
+                    <td>0.704</td><td>0.960</td><td>100%</td><td>658.46 PF</td><td>1&times;</td>
+                  </tr>
+                  <tr>
+                    <td>SpargeAttn</td>
+                    <td>27.140</td><td>0.883</td><td>0.116</td>
+                    <td><u>0.703</u></td><td>0.958</td><td>30.15%</td><td>396.83 PF</td><td>1.58&times;</td>
+                  </tr>
+                  <tr>
+                    <td>SVG</td>
+                    <td>25.297</td><td>0.844</td><td>0.139</td>
+                    <td>0.703</td><td><u>0.958</u></td><td>30.25%</td><td>397.20 PF</td><td>1.58&times;</td>
+                  </tr>
+                  <tr>
+                    <td>SVG2</td>
+                    <td>27.668</td><td>0.888</td><td>0.117</td>
+                    <td>0.701</td><td>0.958</td><td>29.38%</td><td>393.95 PF</td><td>1.61&times;</td>
+                  </tr>
+                  <tr style="background-color: #e8f4f8;">
+                    <td><strong>SVG-EAR</strong></td>
+                    <td><strong>29.759</strong></td><td><strong>0.918</strong></td><td><strong>0.093</strong></td>
+                    <td><strong>0.704</strong></td><td><strong>0.959</strong></td>
+                    <td><u>23.64%</u></td><td>378.88 PF</td><td><u>1.61&times;</u></td>
+                  </tr>
+                  <tr style="background-color: #e8f4f8;">
+                    <td><strong>SVG-EAR-Turbo</strong></td>
+                    <td><u>28.344</u></td><td><u>0.900</u></td><td><u>0.108</u></td>
+                    <td>0.702</td><td>0.958</td>
+                    <td><strong>20.42%</strong></td><td>363.85 PF</td><td><strong>1.77&times;</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="title is-5" style="margin-top: 1.5rem;">Wan 2.2 14B &mdash; 720P Text-to-Video</h3>
+            <div style="overflow-x: auto;">
+              <table class="table is-bordered is-striped is-narrow is-fullwidth" style="font-size: 0.85em;">
+                <thead>
+                  <tr>
+                    <th>Config</th>
+                    <th>PSNR&uarr;</th>
+                    <th>SSIM&uarr;</th>
+                    <th>LPIPS&darr;</th>
+                    <th>ImgQual&uarr;</th>
+                    <th>SubCons&uarr;</th>
+                    <th>Density&darr;</th>
+                    <th>FLOP&darr;</th>
+                    <th>Speedup&uarr;</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><em>Baseline</em></td>
+                    <td>—</td><td>—</td><td>—</td>
+                    <td>0.706</td><td>0.916</td><td>100%</td><td>658.46 PF</td><td>1&times;</td>
+                  </tr>
+                  <tr>
+                    <td>SpargeAttn</td>
+                    <td>20.872</td><td>0.708</td><td>0.242</td>
+                    <td><u>0.708</u></td><td><strong>0.916</strong></td><td>30.15%</td><td>396.83 PF</td><td>1.58&times;</td>
+                  </tr>
+                  <tr>
+                    <td>SVG</td>
+                    <td>19.455</td><td>0.654</td><td>0.292</td>
+                    <td><strong>0.712</strong></td><td>0.912</td><td>30.25%</td><td>397.20 PF</td><td>1.59&times;</td>
+                  </tr>
+                  <tr>
+                    <td>SVG2</td>
+                    <td>23.556</td><td>0.802</td><td>0.183</td>
+                    <td>0.705</td><td>0.914</td><td>32.30%</td><td>404.88 PF</td><td>1.57&times;</td>
+                  </tr>
+                  <tr style="background-color: #e8f4f8;">
+                    <td><strong>SVG-EAR</strong></td>
+                    <td><strong>24.995</strong></td><td><strong>0.841</strong></td><td><strong>0.153</strong></td>
+                    <td>0.706</td><td><u>0.915</u></td>
+                    <td><u>25.95%</u></td><td>387.53 PF</td><td><u>1.59&times;</u></td>
+                  </tr>
+                  <tr style="background-color: #e8f4f8;">
+                    <td><strong>SVG-EAR-Turbo</strong></td>
+                    <td><u>23.940</u></td><td><u>0.814</u></td><td><u>0.174</u></td>
+                    <td>0.705</td><td>0.915</td>
+                    <td><strong>22.25%</strong></td><td>370.71 PF</td><td><strong>1.75&times;</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="title is-5" style="margin-top: 1.5rem;">HunyuanVideo 13B &mdash; 720P Text-to-Video</h3>
+            <div style="overflow-x: auto;">
+              <table class="table is-bordered is-striped is-narrow is-fullwidth" style="font-size: 0.85em;">
+                <thead>
+                  <tr>
+                    <th>Config</th>
+                    <th>PSNR&uarr;</th>
+                    <th>SSIM&uarr;</th>
+                    <th>LPIPS&darr;</th>
+                    <th>ImgQual&uarr;</th>
+                    <th>SubCons&uarr;</th>
+                    <th>Density&darr;</th>
+                    <th>FLOP&darr;</th>
+                    <th>Speedup&uarr;</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><em>Baseline</em></td>
+                    <td>—</td><td>—</td><td>—</td>
+                    <td>0.665</td><td>0.904</td><td>100%</td><td>612.38 PF</td><td>1&times;</td>
+                  </tr>
+                  <tr>
+                    <td>SpargeAttn</td>
+                    <td>24.589</td><td>0.796</td><td>0.232</td>
+                    <td>0.629</td><td><strong>0.908</strong></td><td>40.09%</td><td>389.76 PF</td><td>1.38&times;</td>
+                  </tr>
+                  <tr>
+                    <td>SVG</td>
+                    <td>27.325</td><td>0.880</td><td>0.140</td>
+                    <td><strong>0.665</strong></td><td><u>0.905</u></td><td>29.92%</td><td>351.97 PF</td><td>1.57&times;</td>
+                  </tr>
+                  <tr>
+                    <td>SVG2</td>
+                    <td><u>29.445</u></td><td><u>0.911</u></td><td><u>0.112</u></td>
+                    <td>0.654</td><td>0.901</td><td>26.21%</td><td>299.02 PF</td><td><u>1.89&times;</u></td>
+                  </tr>
+                  <tr style="background-color: #e8f4f8;">
+                    <td><strong>SVG-EAR</strong></td>
+                    <td><strong>31.043</strong></td><td><strong>0.928</strong></td><td><strong>0.092</strong></td>
+                    <td><u>0.659</u></td><td>0.903</td>
+                    <td>22.17%</td><td>281.86 PF</td><td><strong>1.93&times;</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Efficiency Evaluation -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Efficiency Evaluation</h2>
+          <div class="content has-text-justified">
+            <p>
+              SVG-EAR's routing overhead is negligible in practice, accounting for only <strong>6.5%</strong> of total
+              end-to-end latency on Wan2.2 T2V 720p inference. This efficiency is driven by a custom Triton kernel that
+              achieves up to <strong>13.74&times;</strong> speedup over the native PyTorch implementation via fused
+              streaming error estimation.
+            </p>
+          </div>
+
+          <div class="columns is-centered" style="margin-top: 1rem; align-items: flex-start;">
+            <div class="column is-three-fifths">
+              <figure class="image">
+                <img src="./assets/images/performance_plot.png"
+                  alt="Generation latency breakdown: SVG-EAR vs baselines on Wan2.2 T2V 720p"
+                  class="clickable-image" style="width: 100%; border-radius: 8px;">
+                <figcaption style="font-size: 0.8em; color: gray; margin-top: 0.5rem;">
+                  (a) Generation latency breakdown during a single Wan2.2 T2V 720p inference, compared with
+                  full attention and SVG2.
+                </figcaption>
+              </figure>
+            </div>
+            <div class="column is-two-fifths">
+              <figure class="image">
+                <img src="./assets/images/Efficiency_of_kernel.png"
+                  alt="Efficiency of SVG-EAR custom Triton kernel vs PyTorch baseline"
+                  class="clickable-image" style="width: 100%; border-radius: 8px;">
+                <figcaption style="font-size: 0.8em; color: gray; margin-top: 0.5rem;">
+                  (b) End-to-end latency comparison between our efficient Triton implementation and the native
+                  PyTorch version — up to 13.74&times; speedup.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Error Analysis -->
+  <section class="section hero">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Error Analysis</h2>
+          <div class="content has-text-justified">
+            <p>
+                To assess the quality-efficiency trade-off, we compare the Mean Squared Error (MSE) of three strategies against full attention: top-p selection (SVG2), top-p with linear compensation, and our proposed Error-Aware Routing with linear compensation (SVG-EAR). While standard score-based selection often suffers from information loss, SVG-EAR prioritizes blocks with the highest potential approximation error for exact computation, achieving the highest congruence with the full attention reference.
+            </p>
+
+            <p>
+              Empirical analysis validates the link between reconstruction error and clustering quality. As the number of query clusters ($Q_C$) increases, the average squared clustering error ($\delta_q^2$) and attention MSE decline in sync. <strong>This confirms that better semantic clustering directly enhances accuracy, making error estimation both predictable and theoretically sound.</strong> Thus, SVG-EAR provides a robust, high-fidelity acceleration mechanism for video diffusion.
+            </p>
+            <div class="columns is-centered" style="align-items: flex-start;">
+              <div class="column" style="flex: 9;">
+                <figure class="image">
+                  <img src="./assets/images/attention_density_plot.png"
+                    alt="Attention MSE vs Density: error-aware routing outperforms top-p selection"
+                    class="clickable-image" style="width: 100%; border-radius: 8px;">
+                  <figcaption style="font-size: 0.8em; color: gray; margin-top: 0.5rem;">
+                    (a) Attention MSE vs. Density. SVG-EAR's error-aware routing yields the attention map most
+                    consistent with full attention.
+                  </figcaption>
+                </figure>
+              </div>
+              <div class="column" style="flex: 8;">
+                <figure class="image">
+                  <img src="./assets/images/clustering_error.png"
+                    alt="Clustering error and attention MSE decrease as Q cluster count increases"
+                    class="clickable-image" style="width: 100%; border-radius: 8px;">
+                  <figcaption style="font-size: 0.8em; color: gray; margin-top: 0.5rem;">
+                    (b) Clustering error &delta;<sub>q</sub>&sup2; and attention MSE both decrease as the number of Q
+                    clusters increases, validating our theoretical bound.
+                  </figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Attention Visualization -->
+  <!-- <section class="section hero">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-4">Attention Visualization</h2>
+          <div class="content has-text-justified">
+            <p>
+              We visualize attention maps from specific heads in Wan2.2 during text-to-video generation. SVG-EAR's
+              error-aware routing covers a broader range and allocates attention to marginal tokens with relatively small
+              attention weights. The resulting attention maps are more similar to the permuted full-attention maps,
+              particularly in cases where the attention weight distribution is relatively uniform.
+            </p>
+            <div class="container has-text-centered">
+              <figure class="image" style="width: 100%;">
+                <img src="./assets/images/visualization.png"
+                  alt="Attention map visualization: original, permuted, SVG2 top-p, and SVG-EAR error-aware routing"
+                  class="clickable-image" style="width: 100%; border-radius: 8px;">
+                <figcaption style="font-size: 0.8em; color: gray; margin-top: 0.5rem;">
+                  Figure: Visualization of attention maps from Wan2.2 text-to-video generation. (a) Original attention
+                  maps. (b) Permuted attention maps. (c) SVG2 top-p selection. (d) SVG-EAR error-aware routing with
+                  mean compensation, achieving higher attention map similarity to full attention.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code id="bibtex-code">@article{zhou2026svgear,
+  title={SVG-EAR: Parameter-Free Linear Compensation for Sparse Video Generation via Error-aware Routing},
+  author={Xuanyi Zhou and Qiuyang Mang and Shuo Yang and Haocheng Xi and Jintao Zhang and Huanzhi Mao and Joseph E. Gonzalez and Kurt Keutzer and Ion Stoica and Alvin Cheung},
+  journal={arXiv preprint arXiv2603.08982},
+  year={2026},
+}</code></pre>
+      <button class="button is-dark" onclick="copyBibTex()">Copy BibTeX</button>
+    </div>
+  </section>
+
+  <script>
+    function copyBibTex() {
+      var copyText = document.getElementById("bibtex-code").innerText;
+      navigator.clipboard.writeText(copyText).then(function () {
+        alert("BibTeX copied to clipboard!");
+      }, function (err) {
+        alert("Failed to copy BibTeX: ", err);
+      });
+    }
+
+    // Picture Modal Box Function
+    let currentImageIndex = 0;
+    let images = [];
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Get all clickable images
+      images = Array.from(document.querySelectorAll('.clickable-image'));
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImage');
+      const modalCaption = document.getElementById('modalCaption');
+      const closeBtn = document.querySelector('.image-modal-close');
+      const prevBtn = document.querySelector('.image-modal-prev');
+      const nextBtn = document.querySelector('.image-modal-next');
+
+      // Add click event to each image
+      images.forEach((img, index) => {
+        img.addEventListener('click', function () {
+          currentImageIndex = index;
+          showModal(img);
+        });
+      });
+
+      // Show modal
+      function showModal(img) {
+        modal.style.display = 'block';
+
+        // Check if it's a video element
+        if (img.hasAttribute('data-video')) {
+          const videoSrc = img.getAttribute('data-video');
+
+          // Hide image element, show video
+          modalImg.style.display = 'none';
+
+          // Create or get video element
+          let modalVideo = document.getElementById('modalVideo');
+          if (!modalVideo) {
+            modalVideo = document.createElement('video');
+            modalVideo.id = 'modalVideo';
+            modalVideo.className = 'image-modal-content';
+            modalVideo.controls = true;
+            modalVideo.autoplay = true;
+            modalVideo.muted = true;
+            modalVideo.loop = true;
+            modalVideo.style.maxWidth = '90%';
+            modalVideo.style.maxHeight = '90%';
+            modalVideo.style.objectFit = 'contain';
+            modal.appendChild(modalVideo);
+          }
+
+          modalVideo.src = videoSrc;
+          modalVideo.style.display = 'block';
+          modalCaption.textContent = 'Video: ' + videoSrc.split('/').pop();
+        }
+        // Check if it's a placeholder element
+        else if (img.hasAttribute('data-placeholder')) {
+          modalImg.style.display = 'block';
+          const modalVideo = document.getElementById('modalVideo');
+          if (modalVideo) modalVideo.style.display = 'none';
+          const canvas = document.createElement('canvas');
+          canvas.width = 400;
+          canvas.height = 300;
+          const ctx = canvas.getContext('2d');
+          const computedStyle = window.getComputedStyle(img);
+          const bgImage = computedStyle.backgroundImage;
+          let gradient;
+          if (bgImage && bgImage !== 'none') {
+            gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+          } else {
+            gradient = '#f0f0f0';
+          }
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = 'white';
+          ctx.font = 'bold 24px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(img.getAttribute('data-placeholder'), canvas.width / 2, canvas.height / 2);
+          modalImg.src = canvas.toDataURL();
+          modalImg.alt = img.getAttribute('data-placeholder');
+          modalCaption.textContent = img.getAttribute('data-placeholder') || '';
+        } else {
+          // Handle regular images
+          modalImg.style.display = 'block';
+          const modalVideo = document.getElementById('modalVideo');
+          if (modalVideo) modalVideo.style.display = 'none';
+          modalImg.src = img.src;
+          modalImg.alt = img.alt;
+          modalCaption.textContent = img.alt || '';
+        }
+
+        document.body.style.overflow = 'hidden';
+      }
+
+      // Close modal
+      function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+
+      // Show previous image
+      function showPrevImage() {
+        currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+        const img = images[currentImageIndex];
+        showModal(img);
+      }
+
+      // Show next image
+      function showNextImage() {
+        currentImageIndex = (currentImageIndex + 1) % images.length;
+        const img = images[currentImageIndex];
+        showModal(img);
+      }
+
+      // Event Listeners
+      closeBtn.addEventListener('click', closeModal);
+      prevBtn.addEventListener('click', showPrevImage);
+      nextBtn.addEventListener('click', showNextImage);
+
+      // Click modal background to close
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      // Keyboard Navigation
+      document.addEventListener('keydown', function (e) {
+        if (modal.style.display === 'block') {
+          switch (e.key) {
+            case 'Escape':
+              closeModal();
+              break;
+            case 'ArrowLeft':
+              showPrevImage();
+              break;
+            case 'ArrowRight':
+              showNextImage();
+              break;
+          }
+        }
+      });
+
+      // Prevent modal image click from bubbling
+      modalImg.addEventListener('click', function (e) {
+        e.stopPropagation();
+      });
+
+      // Touch swipe support (mobile)
+      let startX = 0;
+      let startY = 0;
+
+      modalImg.addEventListener('touchstart', function (e) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      });
+
+      modalImg.addEventListener('touchend', function (e) {
+        if (!startX || !startY) return;
+        let endX = e.changedTouches[0].clientX;
+        let endY = e.changedTouches[0].clientY;
+        let diffX = startX - endX;
+        let diffY = startY - endY;
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+          if (diffX > 0) {
+            showNextImage();
+          } else {
+            showPrevImage();
+          }
+        }
+        startX = 0;
+        startY = 0;
+      });
+    });
+  </script>
+  <!--End BibTex citation -->
+
+  <!-- Picture Modal Box -->
+  <div id="imageModal" class="image-modal">
+    <span class="image-modal-close">&times;</span>
+    <span class="image-modal-nav image-modal-prev">&#10094;</span>
+    <span class="image-modal-nav image-modal-next">&#10095;</span>
+    <img class="image-modal-content" id="modalImage" alt="Enlarge image">
+    <div class="image-modal-caption" id="modalCaption"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template"
+                target="_blank">Academic Project Page Template</a> which was adopted from the <a
+                href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+              You are free to borrow the source code of this website, we just ask that you link back to this page in
+              the footer. <br> This website is licensed under a <a rel="license"
+                href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+                Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Statcounter tracking code -->
+  <!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+  <!-- End of Statcounter Code -->
+
+</body>
+
+</html>
