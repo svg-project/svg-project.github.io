@@ -44,6 +44,58 @@
   <script src="../static/js/index.js"></script>
 
   <style>
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 0.6rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: stretch;
+    }
+
+    .top-nav a {
+      flex: 1;
+      color: #555;
+      font-weight: 500;
+      font-size: 1.1rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0;
+      transition: color 0.2s, background 0.2s;
+      white-space: nowrap;
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .top-nav a:last-child {
+      border-right: none;
+    }
+
+    .top-nav a:hover {
+      color: #003262;
+      background: rgba(0, 50, 98, 0.05);
+    }
+
+    .top-nav a.active {
+      color: #003262;
+      font-weight: 700;
+      background: rgba(0, 50, 98, 0.06);
+    }
+
+    body {
+      padding-top: 2.8rem;
+    }
+
     /* Mobile responsive styles */
     @media screen and (max-width: 768px) {
       .container {
@@ -90,6 +142,12 @@
 
 <body>
 
+  <nav class="top-nav">
+    <a href="../"><i class="fas fa-home"></i> Home</a>
+    <a href="../v1/" class="active">Sparse VideoGen</a>
+    <a href="../v2/">Sparse VideoGen 2</a>
+    <a href="../qvg/">Quant VideoGen</a>
+  </nav>
 
   <section class="hero">
     <div class="hero-body">
